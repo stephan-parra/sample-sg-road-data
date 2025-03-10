@@ -7,18 +7,39 @@
     <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> <!-- Include Turf.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; }
-        #map { width: 100vw; height: 100vh; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         #layer-control {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
             background: white;
-            padding: 10px;
-            border-radius: 3px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1;
+            transition: all 0.3s ease;
+        }
+        #layer-control:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #layer-control input {
+            margin-right: 8px;
+        }
+        #layer-control label {
+            font-weight: 500;
+            color: #333;
         }
     </style>
 </head>
@@ -163,7 +184,6 @@
                         });
                     }
                 }
-
             });
 
             document.getElementById('toggle-roads').addEventListener('change', function(e) {
@@ -191,10 +211,9 @@
             });
         });
     </script>
-
-    </script>
 </body>
 </html>
+
 
 
 
