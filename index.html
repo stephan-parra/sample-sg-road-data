@@ -6,6 +6,7 @@
     <title>MapLibre on GitHub Pages</title>
     <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
     <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> <!-- Include Turf.js -->
     <style>
         body { margin: 0; padding: 0; }
         #map { width: 100vw; height: 100vh; }
@@ -55,15 +56,14 @@
                     "maxzoom": 19
                 }]
             },
-            center: [103.8198, 1.3421], // Adjust this to the center of your points if needed
-            zoom: 13 // Adjust this to ensure the points are visible
+            center: [103.8198, 1.3421],
+            zoom: 13
         });
 
-        // Load external GeoJSON (hosted on GitHub)
         map.on('load', function () {
             map.addSource('places', {
                 type: 'geojson',
-                data: 'data.geojson' // Update with your actual GeoJSON file
+                data: 'data.geojson'
             });
 
             map.addLayer({
@@ -76,7 +76,6 @@
                 }
             });
 
-            // Add SG_Roads.geojson layer
             map.addSource('sg-roads', {
                 type: 'geojson',
                 data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson'
@@ -96,10 +95,9 @@
                 }
             });
 
-            // Add AssetPoints1.geojson layer
             map.addSource('asset-points', {
                 type: 'geojson',
-                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/AssetPoints1.geojson' // Update with the correct URL
+                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/AssetPoints1.geojson'
             });
 
             map.addLayer({
@@ -111,11 +109,10 @@
                     'circle-color': '#4411ED'
                 },
                 'layout': {
-                    'visibility': 'visible' // Ensure the layer is visible by default
+                    'visibility': 'visible'
                 }
             });
 
-            // Add AssetLineNetwork2.geojson layer
             map.addSource('asset-line-network', {
                 type: 'geojson',
                 data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/AssetLineNetwork2.geojson'
@@ -130,12 +127,45 @@
                     'line-cap': 'round'
                 },
                 'paint': {
-                    'line-color': '#CC02F5', // Orange color
+                    'line-color': '#CC02F5',
                     'line-width': 2
                 }
             });
 
-            // Layer control logic
+            map.addSource('worksite', {
+                type: 'geojson',
+                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/Worksite.geojson'
+            });
+
+            map.addLayer({
+                'id': 'worksite-border-layer',
+                'type': 'line',
+                'source': 'worksite',
+                'paint': {
+                    'line-color': '#4a4a4a',
+                    'line-width': 2
+                }
+            });
+
+            map.on('sourcedata', function(e) {
+                if (e.sourceId === 'worksite' && e.isSourceLoaded) {
+                    var worksiteData = map.getSource('worksite')._data;
+                    var assetPointsData = map.getSource('asset-points')._data;
+
+                    // Ensure worksiteData is a valid polygon
+                    if (worksiteData.features.length > 0 && worksiteData.features[0].geometry.type === 'Polygon') {
+                        var filteredFeatures = assetPointsData.features.filter(function(feature) {
+                            return turf.booleanPointInPolygon(feature, worksiteData.features[0]);
+                        });
+                        map.getSource('asset-points').setData({
+                            type: 'FeatureCollection',
+                            features: filteredFeatures
+                        });
+                    }
+                }
+
+            });
+
             document.getElementById('toggle-roads').addEventListener('change', function(e) {
                 map.setLayoutProperty(
                     'sg-roads-layer',
@@ -161,8 +191,12 @@
             });
         });
     </script>
+
+    </script>
 </body>
 </html>
+
+
 
 
 
