@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>MapLibre on GitHub Pages</title>
+    <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://demotiles.maplibre.org/style.json', // Change to your custom style if needed
+            center: [-0.1276, 51.5072], // London
+            zoom: 10
+        });
+
+        // Load external GeoJSON (hosted on GitHub)
+        map.on('load', function () {
+            map.addSource('places', {
+                type: 'geojson',
+                data: 'data.geojson' // Update with your actual GeoJSON file
+            });
+
+            map.addLayer({
+                'id': 'places-layer',
+                'type': 'circle',
+                'source': 'places',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-color': '#007cbf'
+                }
+            });
+        });
+    </script>
+</body>
+</html>
