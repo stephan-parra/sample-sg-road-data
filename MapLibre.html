@@ -9,16 +9,54 @@
     <style>
         body { margin: 0; padding: 0; }
         #map { width: 100vw; height: 100vh; }
+        #layer-control {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div id="layer-control">
+        <input type="checkbox" id="toggle-roads" checked>
+        <label for="toggle-roads">Low Voltage Network</label><br>
+        <input type="checkbox" id="toggle-asset-points" checked>
+        <label for="toggle-asset-points">Asset Points 1</label><br>
+        <input type="checkbox" id="toggle-high-voltage" checked>
+        <label for="toggle-high-voltage">High Voltage Network</label>
+    </div>
     <script>
         var map = new maplibregl.Map({
             container: 'map',
-            style: 'https://demotiles.maplibre.org/style.json', // Change to your custom style if needed
-            center: [-0.1276, 51.5072], // London
-            zoom: 10
+            style: {
+                "version": 8,
+                "sources": {
+                    "osm-tiles": {
+                        "type": "raster",
+                        "tiles": [
+                            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        ],
+                        "tileSize": 256
+                    }
+                },
+                "layers": [{
+                    "id": "osm-tiles",
+                    "type": "raster",
+                    "source": "osm-tiles",
+                    "minzoom": 0,
+                    "maxzoom": 19
+                }]
+            },
+            center: [103.8198, 1.3421], // Adjust this to the center of your points if needed
+            zoom: 13 // Adjust this to ensure the points are visible
         });
 
         // Load external GeoJSON (hosted on GitHub)
@@ -37,7 +75,103 @@
                     'circle-color': '#007cbf'
                 }
             });
+
+            // Add SG_Roads.geojson layer
+            map.addSource('sg-roads', {
+                type: 'geojson',
+                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson'
+            });
+
+            map.addLayer({
+                'id': 'sg-roads-layer',
+                'type': 'line',
+                'source': 'sg-roads',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#ff0000',
+                    'line-width': 2
+                }
+            });
+
+            // Add AssetPoints1.geojson layer
+            map.addSource('asset-points', {
+                type: 'geojson',
+                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/AssetPoints1.geojson' // Update with the correct URL
+            });
+
+            map.addLayer({
+                'id': 'asset-points-layer',
+                'type': 'circle',
+                'source': 'asset-points',
+                'paint': {
+                    'circle-radius': 7,
+                    'circle-color': '#4411ED'
+                },
+                'layout': {
+                    'visibility': 'visible' // Ensure the layer is visible by default
+                }
+            });
+
+            // Add AssetLineNetwork2.geojson layer
+            map.addSource('asset-line-network', {
+                type: 'geojson',
+                data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/AssetLineNetwork2.geojson'
+            });
+
+            map.addLayer({
+                'id': 'asset-line-network-layer',
+                'type': 'line',
+                'source': 'asset-line-network',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': '#FFA500', // Orange color
+                    'line-width': 2
+                }
+            });
+
+            // Layer control logic
+            document.getElementById('toggle-roads').addEventListener('change', function(e) {
+                map.setLayoutProperty(
+                    'sg-roads-layer',
+                    'visibility',
+                    e.target.checked ? 'visible' : 'none'
+                );
+            });
+
+            document.getElementById('toggle-asset-points').addEventListener('change', function(e) {
+                map.setLayoutProperty(
+                    'asset-points-layer',
+                    'visibility',
+                    e.target.checked ? 'visible' : 'none'
+                );
+            });
+
+            document.getElementById('toggle-high-voltage').addEventListener('change', function(e) {
+                map.setLayoutProperty(
+                    'asset-line-network-layer',
+                    'visibility',
+                    e.target.checked ? 'visible' : 'none'
+                );
+            });
         });
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
