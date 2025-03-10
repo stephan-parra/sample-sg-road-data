@@ -24,10 +24,10 @@
 <body>
     <div id="map"></div>
     <div id="layer-control">
+        <input type="checkbox" id="toggle-asset-points" checked>
+        <label for="toggle-asset-points">Towers</label><br>
         <input type="checkbox" id="toggle-roads" checked>
         <label for="toggle-roads">Low Voltage Network</label><br>
-        <input type="checkbox" id="toggle-asset-points" checked>
-        <label for="toggle-asset-points">Asset Points 1</label><br>
         <input type="checkbox" id="toggle-high-voltage" checked>
         <label for="toggle-high-voltage">High Voltage Network</label>
     </div>
@@ -130,7 +130,7 @@
                     'line-cap': 'round'
                 },
                 'paint': {
-                    'line-color': '#FFA500', // Orange color
+                    'line-color': '#CC02F5', // Orange color
                     'line-width': 2
                 }
             });
