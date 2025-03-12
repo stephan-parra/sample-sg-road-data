@@ -20,7 +20,7 @@
             height: 100vh;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        #layer-control {
+        .layer-control {
             position: absolute;
             top: 20px;
             left: 20px;
@@ -31,29 +31,49 @@
             z-index: 1;
             transition: all 0.3s ease;
         }
-        #layer-control:hover {
+        .layer-control:hover {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        #layer-control input {
+        .layer-control input {
             margin-right: 8px;
         }
-        #layer-control label {
+        .layer-control label {
             font-weight: 500;
             color: #333;
         }
+        #annotation-mode, #clear-annotations {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #annotation-mode:hover, #clear-annotations:hover {
+            background-color: #0056b3;
+        }
+
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="layer-control">
+    <div class="layer-control">
         <input type="checkbox" id="toggle-asset-points" checked>
-        <label for="toggle-asset-points">Substation (Source: Central Repo)</label><br>
+        <label for="toggle-asset-points">Towers (Source: Central Repo)</label><br>
         <input type="checkbox" id="toggle-roads" checked>
         <label for="toggle-roads">Low Voltage Network (Source: Central Repo)</label><br>
         <input type="checkbox" id="toggle-high-voltage" checked>
         <label for="toggle-high-voltage">High Voltage Network (Source: Central Repo)</label><br>
         <input type="checkbox" id="toggle-traffic-assets" checked>
-        <label for="toggle-traffic-assets">Traffic Assets (Source: Remote API)</label>
+        <label for="toggle-traffic-assets">Traffic Assets (Source: Remote API)</label><br>
+        <!-- Modern styled button for annotation mode -->
+        <button id="annotation-mode">Toggle Annotation Mode</button>
+
     </div>
     <script>
         var map = new maplibregl.Map({
@@ -83,7 +103,27 @@
             zoom: 13
         });
 
+        var annotationMode = false;
+        var annotations = [];
+
+        document.getElementById('annotation-mode').addEventListener('click', function() {
+            annotationMode = !annotationMode;
+            this.textContent = annotationMode ? 'Exit Annotation Mode' : 'Toggle Annotation Mode';
+        });
+
+        map.on('click', function(e) {
+            if (annotationMode) {
+                var coordinates = [e.lngLat.lng, e.lngLat.lat];
+                var marker = new maplibregl.Marker()
+                    .setLngLat(coordinates)
+                    .addTo(map);
+
+                annotations.push(coordinates);
+                console.log('Annotation added at:', coordinates);
+            }
+        });
         map.on('load', function () {
+
             map.addSource('places', {
                 type: 'geojson',
                 data: 'data.geojson'
@@ -128,7 +168,7 @@
                 'type': 'circle',
                 'source': 'asset-points',
                 'paint': {
-                    'circle-radius': 5,
+                    'circle-radius': 7,
                     'circle-color': '#4411ED'
                 },
                 'layout': {
@@ -247,7 +287,7 @@
                         'type': 'circle',
                         'source': 'traffic-assets',
                         'paint': {
-                            'circle-radius': 7,
+                            'circle-radius': 6,
                             'circle-color': '#FF5733'
                         }
                     });
@@ -262,10 +302,35 @@
                     });
                 })
                 .catch(error => console.error('Error fetching traffic data:', error));
+
+            // Add click event for Low Voltage Network layer
+            map.on('click', 'sg-roads-layer', function (e) {
+                var coordinates = e.lngLat;
+                var properties = e.features[0].properties;
+
+                // Create a popup and set its content
+                new maplibregl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML('<strong>Low Voltage Network</strong><br>' +
+                             'Source: ' + properties.Name)
+                    .addTo(map);
+            });
+
+            // Change the cursor to a pointer when the mouse is over the Low Voltage Network layer
+            map.on('mouseenter', 'sg-roads-layer', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+
+            // Change it back to a pointer when it leaves
+            map.on('mouseleave', 'sg-roads-layer', function () {
+                map.getCanvas().style.cursor = '';
+            });
         });
     </script>
 </body>
 </html>
+
+
 
 
 
