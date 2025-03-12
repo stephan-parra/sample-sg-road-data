@@ -47,7 +47,7 @@
     <div id="map"></div>
     <div id="layer-control">
         <input type="checkbox" id="toggle-asset-points" checked>
-        <label for="toggle-asset-points">Towers (Source: Central Repo)</label><br>
+        <label for="toggle-asset-points">Substation (Source: Central Repo)</label><br>
         <input type="checkbox" id="toggle-roads" checked>
         <label for="toggle-roads">Low Voltage Network (Source: Central Repo)</label><br>
         <input type="checkbox" id="toggle-high-voltage" checked>
@@ -128,7 +128,7 @@
                 'type': 'circle',
                 'source': 'asset-points',
                 'paint': {
-                    'circle-radius': 7,
+                    'circle-radius': 5,
                     'circle-color': '#4411ED'
                 },
                 'layout': {
@@ -247,7 +247,7 @@
                         'type': 'circle',
                         'source': 'traffic-assets',
                         'paint': {
-                            'circle-radius': 5,
+                            'circle-radius': 7,
                             'circle-color': '#FF5733'
                         }
                     });
