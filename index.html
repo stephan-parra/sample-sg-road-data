@@ -252,79 +252,108 @@
                 );
             });
 
-            // Fetch traffic data from the API
-            fetch('https://api.data.gov.sg/v1/transport/traffic-images')
-                .then(response => response.json())
-                .then(data => {
-                    // Convert API data to GeoJSON format
-                    const features = data.items[0].cameras.map(camera => ({
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: [camera.location.longitude, camera.location.latitude]
-                        },
-                        properties: {
-                            camera_id: camera.camera_id,
-                            image: camera.image,
-                            timestamp: camera.timestamp
-                        }
-                    }));
+                        // Fetch traffic data from the API
+                        fetch('https://api.data.gov.sg/v1/transport/traffic-images')
+                            .then(response => response.json())
+                            .then(data => {
+                                // Convert API data to GeoJSON format
+                                const features = data.items[0].cameras.map(camera => ({
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [camera.location.longitude, camera.location.latitude]
+                                    },
+                                    properties: {
+                                        camera_id: camera.camera_id,
+                                        image: camera.image,
+                                        timestamp: camera.timestamp
+                                    }
+                                }));
 
-                    const geojsonData = {
-                        type: 'FeatureCollection',
-                        features: features
-                    };
+                                const geojsonData = {
+                                    type: 'FeatureCollection',
+                                    features: features
+                                };
 
-                    // Add the traffic assets source
-                    map.addSource('traffic-assets', {
-                        type: 'geojson',
-                        data: geojsonData
+                                // Add the traffic assets source
+                                map.addSource('traffic-assets', {
+                                    type: 'geojson',
+                                    data: geojsonData
+                                });
+
+                                // Add the traffic assets layer
+                                map.addLayer({
+                                    'id': 'traffic-assets-layer',
+                                    'type': 'circle',
+                                    'source': 'traffic-assets',
+                                    'paint': {
+                                        'circle-radius': 6,
+                                        'circle-color': '#FF5733'
+                                    }
+                                });
+
+                                // Add event listener for traffic assets toggle
+                                document.getElementById('toggle-traffic-assets').addEventListener('change', function(e) {
+                                    map.setLayoutProperty(
+                                        'traffic-assets-layer',
+                                        'visibility',
+                                        e.target.checked ? 'visible' : 'none'
+                                    );
+                                });
+
+                                // Add click event for Traffic Assets layer
+                                map.on('click', 'traffic-assets-layer', function (e) {
+                                    var coordinates = e.lngLat;
+                                    var properties = e.features[0].properties;
+
+                                    // Create a popup and set its content
+                                    new maplibregl.Popup()
+                                        .setLngLat(coordinates)
+                                        .setHTML(
+                                            '<strong>Camera ID:</strong> ' + properties.camera_id + '<br>' +
+                                            '<strong>Image:</strong> <img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;"><br>' +
+                                            '<strong>Timestamp:</strong> ' + properties.timestamp
+                                        )
+                                        .addTo(map);
+                                });
+
+                                // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
+                                map.on('mouseenter', 'traffic-assets-layer', function () {
+                                    map.getCanvas().style.cursor = 'pointer';
+                                });
+
+                                // Change it back to default when it leaves
+                                map.on('mouseleave', 'traffic-assets-layer', function () {
+                                    map.getCanvas().style.cursor = '';
+                                });
+                            })
+                            .catch(error => console.error('Error fetching traffic data:', error));
+
+                        // Add click event for Low Voltage Network layer
+                        map.on('click', 'sg-roads-layer', function (e) {
+                            var coordinates = e.lngLat;
+                            var properties = e.features[0].properties;
+
+                            // Create a popup and set its content
+                            new maplibregl.Popup()
+                                .setLngLat(coordinates)
+                                .setHTML('<strong>Property:</strong> ' + properties.name)
+                                .addTo(map);
+                        });
+
+                        // Change the cursor to a pointer when the mouse is over the Low Voltage Network layer
+                        map.on('mouseenter', 'sg-roads-layer', function () {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+
+                        // Change it back to a pointer when it leaves
+                        map.on('mouseleave', 'sg-roads-layer', function () {
+                            map.getCanvas().style.cursor = '';
+                        });
                     });
-
-                    // Add the traffic assets layer
-                    map.addLayer({
-                        'id': 'traffic-assets-layer',
-                        'type': 'circle',
-                        'source': 'traffic-assets',
-                        'paint': {
-                            'circle-radius': 6,
-                            'circle-color': '#FF5733'
-                        }
-                    });
-
-                    // Add event listener for traffic assets toggle
-                    document.getElementById('toggle-traffic-assets').addEventListener('change', function(e) {
-                        map.setLayoutProperty(
-                            'traffic-assets-layer',
-                            'visibility',
-                            e.target.checked ? 'visible' : 'none'
-                        );
-                    });
-                })
-                .catch(error => console.error('Error fetching traffic data:', error));
-
-            // Add click event for Low Voltage Network layer
-            map.on('click', 'sg-roads-layer', function (e) {
-                var coordinates = e.lngLat;
-                var properties = e.features[0].properties;
-
-                // Create a popup and set its content
-                new maplibregl.Popup()
-                    .setLngLat(coordinates)
-                    .setHTML('<strong>Low Voltage Network</strong><br>' +
-                             'Source: ' + properties.Name)
-                    .addTo(map);
-            });
-
-            // Change the cursor to a pointer when the mouse is over the Low Voltage Network layer
-            map.on('mouseenter', 'sg-roads-layer', function () {
-                map.getCanvas().style.cursor = 'pointer';
-            });
-
-            // Change it back to a pointer when it leaves
-            map.on('mouseleave', 'sg-roads-layer', function () {
-                map.getCanvas().style.cursor = '';
-            });
+                </script>
+            </body>
+            </html>
         });
     </script>
 </body>
