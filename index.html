@@ -307,16 +307,19 @@
                                     var properties = e.features[0].properties;
 
                                     // Create a popup and set its content with modern styling
-                                    new maplibregl.Popup()
+                                    new maplibregl.Popup({ maxWidth: '450px' })
                                         .setLngLat(coordinates)
                                         .setHTML(
                                             '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
-                                            '<strong style="font-size: 16px; color: #FF5733;">Camera ID:</strong> ' + properties.camera_id + '<br>' +
-                                            '<strong style="font-size: 16px; color: #FF5733;">Image:</strong> <img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;">' +
-                                            '<strong style="font-size: 16px; color: #FF5733;">Timestamp:</strong> ' + properties.timestamp +
+                                            '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">' +
+                                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Camera ID:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.camera_id + '</td></tr>' +
+                                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Image:</td><td style="border: 1px solid #ddd; padding: 8px;"><img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;"></td></tr>' +
+                                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Timestamp:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.timestamp + '</td></tr>' +
+                                            '</table>' +
                                             '</div>'
                                         )
                                         .addTo(map);
+
                                 });
 
 
