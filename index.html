@@ -306,16 +306,19 @@
                                     var coordinates = e.lngLat;
                                     var properties = e.features[0].properties;
 
-                                    // Create a popup and set its content
+                                    // Create a popup and set its content with modern styling
                                     new maplibregl.Popup()
                                         .setLngLat(coordinates)
                                         .setHTML(
-                                            '<strong>Camera ID:</strong> ' + properties.camera_id + '<br>' +
-                                            '<strong>Image:</strong> <img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;"><br>' +
-                                            '<strong>Timestamp:</strong> ' + properties.timestamp
+                                            '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
+                                            '<strong style="font-size: 16px; color: #FF5733;">Camera ID:</strong> ' + properties.camera_id + '<br>' +
+                                            '<strong style="font-size: 16px; color: #FF5733;">Image:</strong> <img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;">' +
+                                            '<strong style="font-size: 16px; color: #FF5733;">Timestamp:</strong> ' + properties.timestamp +
+                                            '</div>'
                                         )
                                         .addTo(map);
                                 });
+
 
                                 // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
                                 map.on('mouseenter', 'traffic-assets-layer', function () {
