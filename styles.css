@@ -1,62 +1,86 @@
+/* General Page Styling */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f9;
+    background-color: #f8f9fa; /* Light gray for a clean look */
 }
 
+/* Fullscreen Map */
 #map {
     width: 100vw;
     height: 100vh;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.layer-control {
+/* Floating Sidebar */
+.sidebar {
     position: absolute;
-    top: 20px;
+    top: 50px;
     left: 20px;
-    background: white;
+    width: 310px;
+    background: rgba(255, 255, 255, 0.9);
     padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
-.layer-control:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.layer-control input {
-    margin-right: 8px;
-}
-
-.layer-control label {
+.sidebar h2 {
+    margin: 0;
+    font-size: 18px;
     font-weight: 500;
     color: #333;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-#draw-polygon {
-    display: inline-block;
+/* Sidebar Labels */
+.sidebar label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+/* Sidebar Buttons */
+.sidebar button {
+    width: 100%;
+    padding: 12px;
     margin-top: 10px;
-    padding: 10px 20px;
     font-size: 14px;
     font-weight: 500;
-    color: #fff;
-    background-color: #007bff;
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Draw Polygon Button */
+#draw-polygon {
+    background-color: #007bff;
 }
 
 #draw-polygon:hover {
     background-color: #0056b3;
 }
 
+/* Reset Map Button */
+#reset-map {
+    background-color: #dc3545;
+}
+
+#reset-map:hover {
+    background-color: #b52b3a;
+}
+
+/* Map Instructions (Appears at the top center) */
 .map-instructions {
     position: absolute;
-    top: 10px;
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.7);
@@ -64,25 +88,63 @@ body {
     padding: 8px 15px;
     font-size: 14px;
     font-weight: 500;
-    border-radius: 5px;
+    border-radius: 8px;
     display: none; /* Initially hidden */
     z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-#reset-map {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #fff;
-    background-color: #dc3545; /* Red color for reset */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 18px;
+    display: none;
 }
 
-#reset-map:hover {
-    background-color: #b52b3a;
+/* Loading Spinner */
+.loader {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 180px;
+        left: 10px;
+        padding: 10px;
+    }
+
+    .sidebar h2 {
+        font-size: 16px;
+    }
+
+    .sidebar label {
+        font-size: 12px;
+    }
+
+    .sidebar button {
+        font-size: 12px;
+        padding: 10px;
+    }
 }

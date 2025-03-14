@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ✅ Show loading overlay while fetching data
+    function showLoading() {
+        document.getElementById('loading-overlay').style.display = 'flex';
+    }
+
+    // ✅ Hide loading overlay when data is ready
+    function hideLoading() {
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+
     var map = new maplibregl.Map({
         container: 'map',
         style: {
@@ -262,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('draw-instructions').style.display = 'block'; //Map instructions are displayed
         });
 
-        // ✅ When a polygon is drawn, filter and show the selected features before downloading
+        // ✅ When a polygon is drawn, highlight and download selected features
         map.on('draw.create', function(e) {
             var drawnPolygon = e.features[0];
 
@@ -273,17 +283,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('Polygon Drawn:', drawnPolygon.geometry);
 
-            // ✅ Hide the instructions
-            document.getElementById('draw-instructions').style.display = 'none';
+            document.getElementById('draw-instructions').style.display = 'none'; // Hide instructions
             map.getCanvas().style.cursor = ''; // Reset cursor
 
-            // Ensure sg-roads source exists before updating
-            if (!map.getSource('sg-roads')) {
-                console.error('sg-roads source not found');
-                return;
-            }
+            showLoading(); // ✅ Show loading spinner while fetching data
 
-            // Fetch sg-roads data dynamically to filter it
             fetch('https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson')
                 .then(response => response.json())
                 .then(roadsData => {
@@ -291,16 +295,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         return turf.booleanIntersects(feature, drawnPolygon);
                     });
 
+                    hideLoading(); // ✅ Hide loading spinner after data is fetched
+
                     console.log('Filtered Roads:', filteredFeatures.length);
 
                     if (filteredFeatures.length > 0) {
-                        // ✅ Convert the selected features to a GeoJSON object
                         var filteredGeoJSON = {
                             type: "FeatureCollection",
                             features: filteredFeatures
                         };
 
-                        // ✅ Add or update a new layer for filtered features
+                        // ✅ Add filtered roads as a new layer on the map
                         if (map.getLayer('filtered-features-layer')) {
                             map.getSource('filtered-features').setData(filteredGeoJSON);
                         } else {
@@ -318,13 +323,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                     "line-cap": "round"
                                 },
                                 paint: {
-                                    "line-color": "#00FF00", // Bright green highlight
+                                    "line-color": "#00FF00", // Green highlight for selected features
                                     "line-width": 3
                                 }
                             });
                         }
 
-                        // ✅ Wait 2 seconds before downloading (allows user to see selected features)
+                        // ✅ Wait 2 seconds before downloading to allow user to see selection
                         setTimeout(() => {
                             var blob = new Blob([JSON.stringify(filteredGeoJSON, null, 2)], {
                                 type: "application/json"
@@ -332,18 +337,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             var url = URL.createObjectURL(blob);
                             var a = document.createElement("a");
                             a.href = url;
-                            a.download = "selected_features.geojson"; // File name
+                            a.download = "selected_features.geojson";
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
                             URL.revokeObjectURL(url);
-                        }, 2000); // 2-second delay to visualize selection
+                        }, 2000);
                     } else {
                         console.warn("No features found inside the polygon.");
                     }
                 })
-                .catch(error => console.error('Error fetching sg-roads data:', error));
+                .catch(error => {
+                    hideLoading();
+                    console.error('Error fetching sg-roads data:', error);
+                });
         });
+
         // ✅ Reset Map Button Functionality
         document.getElementById('reset-map').addEventListener('click', function() {
             // ✅ Remove drawn polygon

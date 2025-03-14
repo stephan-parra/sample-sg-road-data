@@ -1,39 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>MapLibre on GitHub Pages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Digital Map Viewer</title>
+
+    <!-- MapLibre & Turf.js -->
     <script src="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"></script>
-    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> <!-- Include Turf.js -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <!-- Mapbox Draw for Polygon Selection -->
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
 
-    <!-- Include the external CSS file -->
-    <link href="styles.css" rel="stylesheet" />
-    <!-- Include the external JavaScript file -->
-    <script src="map.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
 </head>
 
 <body>
-    <div id="map"></div>
-    <div class="layer-control">
-        <input type="checkbox" id="toggle-asset-points" checked>
-        <label for="toggle-asset-points">Substation (Source: central repo)</label><br>
-        <input type="checkbox" id="toggle-roads" checked>
-        <label for="toggle-roads">Low Voltage Network (Source: central repo)</label><br>
-        <input type="checkbox" id="toggle-high-voltage" checked>
-        <label for="toggle-high-voltage">High Voltage Network (Source: central repo)</label><br>
-        <input type="checkbox" id="toggle-traffic-assets" checked>
-        <label for="toggle-traffic-assets">Traffic Assets (Source: api.data.gov.sg)</label><br>
 
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Floating Sidebar -->
+    <div class="sidebar">
+        <h2>Map Controls</h2>
+        <label><input type="checkbox" id="toggle-asset-points" checked> Substations (Source: central repo)</label>
+        <label><input type="checkbox" id="toggle-roads" checked> Low Voltage Network (Source: central repo)</label>
+        <label><input type="checkbox" id="toggle-high-voltage" checked> High Voltage Network (Source: central repo)</label>
+        <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets (Source: api.data.gov.sg)</label>
+        
         <button id="draw-polygon">Select and Download LV Network</button>
         <button id="reset-map">Reset Map</button>
     </div>
-    <div id="draw-instructions" class="map-instructions">Click to draw a polygon, double-click to finish</div>
-</body>
 
+    <!-- Instructions for Drawing -->
+    <div id="draw-instructions" class="map-instructions">Click to draw a polygon, double-click to finish</div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loader"></div>
+        <p>Preparing to download data...</p>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="map.js"></script>
+
+</body>
 </html>
