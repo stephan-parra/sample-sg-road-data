@@ -118,39 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        map.addSource('worksite', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/Worksite.geojson'
-        });
-
-        map.addLayer({
-            'id': 'worksite-border-layer',
-            'type': 'line',
-            'source': 'worksite',
-            'paint': {
-                'line-color': '#4a4a4a',
-                'line-width': 2
-            }
-        });
-
-        map.on('sourcedata', function (e) {
-            if (e.sourceId === 'worksite' && e.isSourceLoaded) {
-                var worksiteData = map.getSource('worksite')._data;
-                var assetPointsData = map.getSource('asset-points')._data;
-
-                // Ensure worksiteData is a valid polygon
-                if (worksiteData.features.length > 0 && worksiteData.features[0].geometry.type === 'Polygon') {
-                    var filteredFeatures = assetPointsData.features.filter(function (feature) {
-                        return turf.booleanPointInPolygon(feature, worksiteData.features[0]);
-                    });
-                    map.getSource('asset-points').setData({
-                        type: 'FeatureCollection',
-                        features: filteredFeatures
-                    });
-                }
-            }
-        });
-
         document.getElementById('toggle-roads').addEventListener('change', function (e) {
             map.setLayoutProperty(
                 'sg-roads-layer',
@@ -175,107 +142,130 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
 
-        // Fetch traffic data from the API
-        fetch('https://api.data.gov.sg/v1/transport/traffic-images')
-            .then(response => response.json())
-            .then(data => {
-                // Convert API data to GeoJSON format
-                const features = data.items[0].cameras.map(camera => ({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [camera.location.longitude, camera.location.latitude]
-                    },
-                    properties: {
-                        camera_id: camera.camera_id,
-                        image: camera.image,
-                        timestamp: camera.timestamp
-                    }
-                }));
+                // Fetch traffic data from the API
+                fetch('https://api.data.gov.sg/v1/transport/traffic-images')
+                .then(response => response.json())
+                .then(data => {
+                    // Convert API data to GeoJSON format
+                    const features = data.items[0].cameras.map(camera => ({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [camera.location.longitude, camera.location.latitude]
+                        },
+                        properties: {
+                            camera_id: camera.camera_id,
+                            image: camera.image,
+                            timestamp: camera.timestamp
+                        }
+                    }));
+    
+                    const geojsonData = {
+                        type: 'FeatureCollection',
+                        features: features
+                    };
+    
+                    // Add the traffic assets source
+                    map.addSource('traffic-assets', {
+                        type: 'geojson',
+                        data: geojsonData
+                    });
+    
+                    // Add the traffic assets layer
+                    map.addLayer({
+                        'id': 'traffic-assets-layer',
+                        'type': 'circle',
+                        'source': 'traffic-assets',
+                        'paint': {
+                            'circle-radius': 6,
+                            'circle-color': '#FF5733'
+                        }
+                    });
+    
+                    // Add event listener for traffic assets toggle
+                    document.getElementById('toggle-traffic-assets').addEventListener('change', function (e) {
+                        map.setLayoutProperty(
+                            'traffic-assets-layer',
+                            'visibility',
+                            e.target.checked ? 'visible' : 'none'
+                        );
+                    });
+    
+                    // Add click event for Traffic Assets layer
+                    map.on('click', 'traffic-assets-layer', function (e) {
+                        var coordinates = e.lngLat;
+                        var properties = e.features[0].properties;
+    
+                        // Create a popup and set its content with modern styling
+                        new maplibregl.Popup({ maxWidth: '450px' })
+                            .setLngLat(coordinates)
+                            .setHTML(
+                                '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
+                                '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">' +
+                                '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Camera ID:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.camera_id + '</td></tr>' +
+                                '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Image:</td><td style="border: 1px solid #ddd; padding: 8px;"><img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;"></td></tr>' +
+                                '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Timestamp:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.timestamp + '</td></tr>' +
+                                '</table>' +
+                                '</div>'
+                            )
+                            .addTo(map);
+                    });
+    
+                    // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
+                    map.on('mouseenter', 'traffic-assets-layer', function () {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+    
+                    // Change it back to default when it leaves
+                    map.on('mouseleave', 'traffic-assets-layer', function () {
+                        map.getCanvas().style.cursor = '';
+                    });
+                })
+                .catch(error => console.error('Error fetching traffic data:', error));
 
-                const geojsonData = {
-                    type: 'FeatureCollection',
-                    features: features
-                };
-
-                // Add the traffic assets source
-                map.addSource('traffic-assets', {
-                    type: 'geojson',
-                    data: geojsonData
-                });
-
-                // Add the traffic assets layer
-                map.addLayer({
-                    'id': 'traffic-assets-layer',
-                    'type': 'circle',
-                    'source': 'traffic-assets',
-                    'paint': {
-                        'circle-radius': 6,
-                        'circle-color': '#FF5733'
-                    }
-                });
-
-                // Add event listener for traffic assets toggle
-                document.getElementById('toggle-traffic-assets').addEventListener('change', function (e) {
-                    map.setLayoutProperty(
-                        'traffic-assets-layer',
-                        'visibility',
-                        e.target.checked ? 'visible' : 'none'
-                    );
-                });
-
-                // Add click event for Traffic Assets layer
-                map.on('click', 'traffic-assets-layer', function (e) {
-                    var coordinates = e.lngLat;
-                    var properties = e.features[0].properties;
-
-                    // Create a popup and set its content with modern styling
-                    new maplibregl.Popup({ maxWidth: '450px' })
-                        .setLngLat(coordinates)
-                        .setHTML(
-                            '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
-                            '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">' +
-                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Camera ID:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.camera_id + '</td></tr>' +
-                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Image:</td><td style="border: 1px solid #ddd; padding: 8px;"><img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;"></td></tr>' +
-                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Timestamp:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.timestamp + '</td></tr>' +
-                            '</table>' +
-                            '</div>'
-                        )
-                        .addTo(map);
-                });
-
-                // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
-                map.on('mouseenter', 'traffic-assets-layer', function () {
-                    map.getCanvas().style.cursor = 'pointer';
-                });
-
-                // Change it back to default when it leaves
-                map.on('mouseleave', 'traffic-assets-layer', function () {
-                    map.getCanvas().style.cursor = '';
-                });
-            })
-            .catch(error => console.error('Error fetching traffic data:', error));
-
-        // Add click event for Low Voltage Network layer
-        map.on('click', 'sg-roads-layer', function (e) {
-            var coordinates = e.lngLat;
-            var properties = e.features[0].properties;
-
-            // Create a popup and set its content
-            new maplibregl.Popup()
-                .setLngLat(coordinates)
-                .setHTML('<strong>Property:</strong> ' + properties.Name)
-                .addTo(map);
+        // ✅ Add Mapbox Draw for polygon selection
+        var draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+                polygon: true,
+                trash: true
+            }
         });
 
-        // Change the cursor to a pointer when the mouse is over the Low Voltage Network layer
-        map.on('mouseenter', 'sg-roads-layer', function () {
-            map.getCanvas().style.cursor = 'pointer';
+        map.addControl(draw, 'top-left');
+
+        document.getElementById('draw-polygon').addEventListener('click', function () {
+            draw.changeMode('draw_polygon');
         });
 
-        // Change it back to a pointer when it leaves
-        map.on('mouseleave', 'sg-roads-layer', function () {
-            map.getCanvas().style.cursor = '';
+        // ✅ When a polygon is drawn, filter sg-roads inside it
+        map.on('draw.create', function (e) {
+            var drawnPolygon = e.features[0];
+
+            if (!drawnPolygon) {
+                console.error('No polygon drawn');
+                return;
+            }
+
+            console.log('Polygon Drawn:', drawnPolygon.geometry);
+
+            // Get current sg-roads data
+            fetch('https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson')
+                .then(response => response.json())
+                .then(roadsData => {
+                    var filteredFeatures = roadsData.features.filter(feature => {
+                        return turf.booleanIntersects(feature, drawnPolygon);
+                    });
+
+                    console.log('Filtered Roads:', filteredFeatures.length);
+
+                    // Update the sg-roads source with filtered data
+                    map.getSource('sg-roads').setData({
+                        type: 'FeatureCollection',
+                        features: filteredFeatures
+                    });
+                })
+                .catch(error => console.error('Error fetching sg-roads data:', error));
         });
     });
 });

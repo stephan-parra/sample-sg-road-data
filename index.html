@@ -9,6 +9,9 @@
     <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> <!-- Include Turf.js -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
+
     <!-- Include the external CSS file -->
     <link href="styles.css" rel="stylesheet" />
     <!-- Include the external JavaScript file -->
@@ -28,6 +31,7 @@
         <label for="toggle-traffic-assets">Traffic Assets (Source: api.data.gov.sg)</label><br>
         <!-- Modern styled button for annotation mode -->
         <button id="annotation-mode">Toggle Annotation Mode</button>
+        <button id="draw-polygon">Draw Polygon</button>
     </div>
 </body>
 
