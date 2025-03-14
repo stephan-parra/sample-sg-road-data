@@ -9,65 +9,8 @@
     <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script> <!-- Include Turf.js -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f9;
-        }
-
-        #map {
-            width: 100vw;
-            height: 100vh;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .layer-control {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-
-        .layer-control:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .layer-control input {
-            margin-right: 8px;
-        }
-
-        .layer-control label {
-            font-weight: 500;
-            color: #333;
-        }
-
-        #annotation-mode,
-        #clear-annotations {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #annotation-mode:hover,
-        #clear-annotations:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <!-- Include the external CSS file -->
+    <link href="styles.css" rel="stylesheet" />
     <!-- Include the external JavaScript file -->
     <script src="map.js"></script>
 </head>
