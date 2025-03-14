@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "Worksite",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ 103.806343643094422, 1.327607591179151 ], [ 103.806343643094422, 1.330359603655169 ], [ 103.810482848851038, 1.330359603655169 ], [ 103.810482848851038, 1.327607591179151 ], [ 103.806343643094422, 1.327607591179151 ] ] ] ] } }
+]
+}
