@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     var map = new maplibregl.Map({
         container: 'map',
         style: {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         zoom: 13
     });
 
-    map.on('load', function () {
+    map.on('load', function() {
         map.addSource('places', {
             type: 'geojson',
             data: 'data.geojson'
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'source': 'asset-points',
             'paint': {
                 'circle-radius': 7,
-                'circle-color': '#4411ED'
+                'circle-color': '#0000FF'
             },
             'layout': {
                 'visibility': 'visible'
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        document.getElementById('toggle-roads').addEventListener('change', function (e) {
+        document.getElementById('toggle-roads').addEventListener('change', function(e) {
             map.setLayoutProperty(
                 'sg-roads-layer',
                 'visibility',
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
 
-        document.getElementById('toggle-asset-points').addEventListener('change', function (e) {
+        document.getElementById('toggle-asset-points').addEventListener('change', function(e) {
             map.setLayoutProperty(
                 'asset-points-layer',
                 'visibility',
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
 
-        document.getElementById('toggle-high-voltage').addEventListener('change', function (e) {
+        document.getElementById('toggle-high-voltage').addEventListener('change', function(e) {
             map.setLayoutProperty(
                 'asset-line-network-layer',
                 'visibility',
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         });
 
-                // Fetch traffic data from the API
+        // Fetch traffic data from the API
         fetch('https://api.data.gov.sg/v1/transport/traffic-images')
             .then(response => response.json())
             .then(data => {
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Add event listener for traffic assets toggle
-                document.getElementById('toggle-traffic-assets').addEventListener('change', function (e) {
+                document.getElementById('toggle-traffic-assets').addEventListener('change', function(e) {
                     map.setLayoutProperty(
                         'traffic-assets-layer',
                         'visibility',
@@ -172,12 +172,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Add click event for Traffic Assets layer
-                map.on('click', 'traffic-assets-layer', function (e) {
+                map.on('click', 'traffic-assets-layer', function(e) {
                     var coordinates = e.lngLat;
                     var properties = e.features[0].properties;
 
                     // Create a popup and set its content with modern styling
-                    new maplibregl.Popup({ maxWidth: '450px' })
+                    new maplibregl.Popup({
+                            maxWidth: '450px'
+                        })
                         .setLngLat(coordinates)
                         .setHTML(
                             '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
@@ -192,12 +194,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
-                map.on('mouseenter', 'traffic-assets-layer', function () {
+                map.on('mouseenter', 'traffic-assets-layer', function() {
                     map.getCanvas().style.cursor = 'pointer';
                 });
 
                 // Change it back to default when it leaves
-                map.on('mouseleave', 'traffic-assets-layer', function () {
+                map.on('mouseleave', 'traffic-assets-layer', function() {
                     map.getCanvas().style.cursor = '';
                 });
             })
@@ -209,18 +211,59 @@ document.addEventListener('DOMContentLoaded', function () {
             controls: {
                 polygon: true,
                 trash: true
-            }
+            },
+            styles: [{
+                    "id": "gl-draw-polygon-fill",
+                    "type": "fill",
+                    "filter": ["all", ["==", "$type", "Polygon"],
+                        ["!=", "mode", "static"]
+                    ],
+                    "paint": {
+                        "fill-color": "#FFD700", // Bright yellow fill
+                        "fill-opacity": 0.2 // Semi-transparent
+                    }
+                },
+                {
+                    "id": "gl-draw-polygon-stroke",
+                    "type": "line",
+                    "filter": ["all", ["==", "$type", "Polygon"],
+                        ["!=", "mode", "static"]
+                    ],
+                    "layout": {
+                        "line-cap": "round",
+                        "line-join": "round"
+                    },
+                    "paint": {
+                        "line-color": "#5E0AFA", // Bright orange-red border
+                        "line-width": 4 // Thicker border for visibility
+                    }
+                },
+                {
+                    "id": "gl-draw-polygon-midpoint",
+                    "type": "circle",
+                    "filter": ["all", ["==", "$type", "Point"],
+                        ["==", "meta", "midpoint"]
+                    ],
+                    "paint": {
+                        "circle-radius": 5,
+                        "circle-color": "#000",
+                        "circle-stroke-width": 2,
+                        "circle-stroke-color": "#FFD700"
+                    }
+                }
+            ]
         });
 
         map.addControl(draw, 'top-left');
 
-        document.getElementById('draw-polygon').addEventListener('click', function () {
+        document.getElementById('draw-polygon').addEventListener('click', function() {
             draw.changeMode('draw_polygon');
             map.getCanvas().style.cursor = 'crosshair'; // Change cursor to target (crosshair)
+            document.getElementById('draw-instructions').style.display = 'block'; //Map instructions are displayed
         });
 
-        // ✅ When a polygon is drawn, filter sg-roads inside it
-        map.on('draw.create', function (e) {
+        // ✅ When a polygon is drawn, filter and show the selected features before downloading
+        map.on('draw.create', function(e) {
             var drawnPolygon = e.features[0];
 
             if (!drawnPolygon) {
@@ -230,8 +273,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.log('Polygon Drawn:', drawnPolygon.geometry);
 
-            // Reset cursor to default
-            map.getCanvas().style.cursor = '';
+            // ✅ Hide the instructions
+            document.getElementById('draw-instructions').style.display = 'none';
+            map.getCanvas().style.cursor = ''; // Reset cursor
 
             // Ensure sg-roads source exists before updating
             if (!map.getSource('sg-roads')) {
@@ -239,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Get current sg-roads data
+            // Fetch sg-roads data dynamically to filter it
             fetch('https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson')
                 .then(response => response.json())
                 .then(roadsData => {
@@ -249,13 +293,97 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     console.log('Filtered Roads:', filteredFeatures.length);
 
-                    // Update the sg-roads source with filtered data
-                    map.getSource('sg-roads').setData({
-                        type: 'FeatureCollection',
-                        features: filteredFeatures
-                    });
+                    if (filteredFeatures.length > 0) {
+                        // ✅ Convert the selected features to a GeoJSON object
+                        var filteredGeoJSON = {
+                            type: "FeatureCollection",
+                            features: filteredFeatures
+                        };
+
+                        // ✅ Add or update a new layer for filtered features
+                        if (map.getLayer('filtered-features-layer')) {
+                            map.getSource('filtered-features').setData(filteredGeoJSON);
+                        } else {
+                            map.addSource('filtered-features', {
+                                type: "geojson",
+                                data: filteredGeoJSON
+                            });
+
+                            map.addLayer({
+                                id: "filtered-features-layer",
+                                type: "line",
+                                source: "filtered-features",
+                                layout: {
+                                    "line-join": "round",
+                                    "line-cap": "round"
+                                },
+                                paint: {
+                                    "line-color": "#00FF00", // Bright green highlight
+                                    "line-width": 3
+                                }
+                            });
+                        }
+
+                        // ✅ Wait 2 seconds before downloading (allows user to see selected features)
+                        setTimeout(() => {
+                            var blob = new Blob([JSON.stringify(filteredGeoJSON, null, 2)], {
+                                type: "application/json"
+                            });
+                            var url = URL.createObjectURL(blob);
+                            var a = document.createElement("a");
+                            a.href = url;
+                            a.download = "selected_features.geojson"; // File name
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 2000); // 2-second delay to visualize selection
+                    } else {
+                        console.warn("No features found inside the polygon.");
+                    }
                 })
                 .catch(error => console.error('Error fetching sg-roads data:', error));
         });
-    });
+        // ✅ Reset Map Button Functionality
+        document.getElementById('reset-map').addEventListener('click', function() {
+            // ✅ Remove drawn polygon
+            var allDrawnFeatures = draw.getAll();
+            if (allDrawnFeatures.features.length > 0) {
+                draw.deleteAll(); // Remove all drawn polygons
+            }
+
+            // ✅ Reset `sg-roads` to its original data
+            fetch('https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson')
+                .then(response => response.json())
+                .then(originalData => {
+                    if (map.getSource('sg-roads')) {
+                        map.getSource('sg-roads').setData(originalData);
+                    }
+                })
+                .catch(error => console.error('Error resetting sg-roads data:', error));
+
+            // ✅ Remove the filtered-features layer if it exists
+            if (map.getLayer('filtered-features-layer')) {
+                map.removeLayer('filtered-features-layer');
+                map.removeSource('filtered-features');
+            }
+
+            // ✅ Restore visibility of all layers
+            map.setLayoutProperty('sg-roads-layer', 'visibility', 'visible');
+            map.setLayoutProperty('asset-points-layer', 'visibility', 'visible');
+            map.setLayoutProperty('asset-line-network-layer', 'visibility', 'visible');
+            map.setLayoutProperty('traffic-assets-layer', 'visibility', 'visible');
+
+            // ✅ Re-center the map to its original position
+            map.flyTo({
+                center: [103.8198, 1.3421],
+                zoom: 13,
+                essential: true
+            });
+
+            console.log("Map reset to original state.");
+        });
+
+    }); // 🔹 Make sure this stays at the end of the `map.on('load', function () { ... })` block
+
 });
