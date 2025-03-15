@@ -245,6 +245,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         "circle-stroke-width": 2,
                         "circle-stroke-color": "#FFD700"
                     }
+                },
+                {
+                    "id": "gl-draw-point",
+                    "type": "circle",
+                    "filter": ["all", ["==", "$type", "Point"],
+                        ["!=", "meta", "midpoint"]
+                    ],
+                    "paint": {
+                        "circle-radius": 5,
+                        "circle-color": "#FF0000", // Red color for the initial point
+                        "circle-stroke-width": 2,
+                        "circle-stroke-color": "#FFFFFF"
+                    }
                 }
             ]
         });
