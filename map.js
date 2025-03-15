@@ -37,21 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     map.on('load', function() {
-        map.addSource('places', {
-            type: 'geojson',
-            data: 'data.geojson'
-        });
-
-        map.addLayer({
-            'id': 'places-layer',
-            'type': 'circle',
-            'source': 'places',
-            'paint': {
-                'circle-radius': 6,
-                'circle-color': '#007cbf'
-            }
-        });
-
         map.addSource('sg-roads', {
             type: 'geojson',
             data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/main/SG_Roads.geojson'
