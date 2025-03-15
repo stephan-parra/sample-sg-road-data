@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             '<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">' +
                             '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">' +
                             '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Camera ID:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.camera_id + '</td></tr>' +
-                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Image:</td><td style="border: 1px solid #ddd; padding: 8px;"><img src="' + properties.image + '" alt="Camera Image" style="width:100px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;"></td></tr>' +
+                            '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Image:</td><td style="border: 1px solid #ddd; padding: 8px;"><img src="' + properties.image + '" alt="Camera Image" style="width:300px;height:auto;display:block;margin-top:5px;margin-bottom:5px;border-radius:4px;"></td></tr>' +
                             '<tr><td style="font-size: 14px; color: #333; font-weight: normal; border: 1px solid #ddd; padding: 8px;">Timestamp:</td><td style="border: 1px solid #ddd; padding: 8px;">' + properties.timestamp + '</td></tr>' +
                             '</table>' +
                             '</div>'
