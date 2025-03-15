@@ -36,6 +36,36 @@ document.addEventListener('DOMContentLoaded', function() {
         zoom: 13
     });
 
+    // ✅ Add Scale Bar Control
+    var scale = new maplibregl.ScaleControl({
+        maxWidth: 150, // Adjust width of scale bar
+        unit: 'metric' // Use 'imperial' for miles
+    });
+    map.addControl(scale, 'bottom-left'); // Position: bottom-left
+
+
+    // Scale-to-Zoom Mapping
+    const scaleToZoom = {
+        250: 18,
+        500: 16,
+        1250: 15,
+        2500: 14,
+        5000: 12
+    };
+
+    // Change map zoom based on scale selection
+    document.getElementById('scale-select').addEventListener('change', function() {
+        const selectedScale = this.value;
+        const zoomLevel = scaleToZoom[selectedScale];
+
+        if (zoomLevel !== undefined) {
+            map.flyTo({
+                zoom: zoomLevel,
+                essential: true
+            });
+        }
+    });
+
     map.on('load', function() {
         map.addSource('sg-roads', {
             type: 'geojson',
@@ -188,12 +218,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         .addTo(map);
                 });
 
-                // Change the cursor to a pointer when the mouse is over the Traffic Assets layer
+                // ✅ Ensure Cursor Changes on Hover Over Traffic Assets
                 map.on('mouseenter', 'traffic-assets-layer', function() {
                     map.getCanvas().style.cursor = 'pointer';
                 });
 
-                // Change it back to default when it leaves
                 map.on('mouseleave', 'traffic-assets-layer', function() {
                     map.getCanvas().style.cursor = '';
                 });
