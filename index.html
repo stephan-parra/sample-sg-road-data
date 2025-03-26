@@ -34,12 +34,21 @@
     <!-- Floating Sidebar -->
     <div class="sidebar">
         <h2>Map Controls</h2>
-        <label><input type="checkbox" id="toggle-asset-points" checked> Substations (Source: central repo)</label>
-        <label><input type="checkbox" id="toggle-roads" checked> Low Voltage Network (Source: github)</label>
-        <label><input type="checkbox" id="toggle-high-voltage" checked> High Voltage Network (Source: central repo)</label>
+        <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes (Source: github)</label>
+        <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts (click for info)</label>
+        <label><input type="checkbox" id="toggle-high-voltage" checked> Telstra RDD Fiber Route</label>
+        <label><input type="checkbox" id="toggle-telstra-2a3" checked> Telstra 2a3 2b2 Fiber Route</label>
+        <label><input type="checkbox" id="toggle-telecom-italia" checked> Telecon Italia Fiber Route</label>
+        <label><input type="checkbox" id="toggle-tata" checked> Tata Fiber Route</label>
+        <label><input type="checkbox" id="toggle-reach-ntp" checked> Reach NTP Fiber Route</label>
+        <label><input type="checkbox" id="toggle-reach-cls" checked> Reach CLS Fiber Route</label>
+        <label><input type="checkbox" id="toggle-keppel-pipe" checked> Keppel Pipeline</label>
+        <label><input type="checkbox" id="toggle-keppel-manhole" checked> Keppel Manholes</label>
+        <label><input type="checkbox" id="toggle-orange" checked> Orange Fiber Route</label>
+        <label><input type="checkbox" id="toggle-flag" checked> Flag Telecom Duct</label>
         <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets (Source: api.data.gov.sg)</label>
         
-        <button id="draw-polygon">Select and Download LV Network</button>
+        <button id="draw-polygon">Select and Download Xenith IG Ducts Data</button>
         <button id="reset-map">Reset Map</button>
     </div>
 
@@ -63,6 +72,28 @@
         <div class="loader"></div>
         <p>Preparing to download data...</p>
     </div>
+
+    <!-- Legend Panel -->
+    <div class="legend">
+        <h3>Legend</h3>
+        <ul>
+            <li><span style="background-color:#FF7F50;"></span> Orange Fiber Route</li>
+            <li><span style="background-color:#00CED1;"></span> Keppel Pipeline</li>
+            <li><span style="background-color:#1E90FF; border-radius:50%; width:10px; height:10px;"></span> Keppel Manholes</li>
+            <li><span style="background-color:#A0522D;"></span> Flag Telecom Duct</li>
+            <li><span style="background-color:#FFA500;"></span> Reach NTP Fiber Route</li>
+            <li><span style="background-color:#800080;"></span> Reach CLS Fiber Route</li>
+            <li><span style="background-color:#8B0000;"></span> Tata Fiber Route</li>
+            <li><span style="background-color:#006400;"></span> Telecon Italia Fiber Route</li>
+            <li><span style="background-color:#0099FF;"></span> Telstra 2a3 2b2 Fiber Route</li>
+            <li><span style="background-color:#CC02F5;"></span> Telstra RDD Fiber Route</li>
+            <li><span style="background-color:#FF5733; border-radius:50%; width:10px; height:10px;"></span> Traffic Cameras</li>
+            <li><span style="background-color:#FF0000; border-radius:50%; width:10px; height:10px;"></span> Xenith IG Manholes</li>
+            <li><span style="background-color:#FF0000;"></span> Xenith IG Ducts</li>
+            <li><span style="background-color:#00FF00;"></span> Selected Features</li>
+        </ul>
+    </div>
+
 
     <!-- Custom JavaScript -->
     <script src="map.js"></script>
