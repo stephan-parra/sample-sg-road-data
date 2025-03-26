@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function hideLoading() {
         document.getElementById('loading-overlay').style.display = 'none';
     }
+    
 
     var map = new maplibregl.Map({
         container: 'map',
