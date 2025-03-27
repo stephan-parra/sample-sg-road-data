@@ -70,263 +70,148 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     map.on('load', function() {
-        map.addSource('sg-roads', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/XenithIG_duct_line.json'
-        });        
+        const geojsonCache = {};
 
-        map.addLayer({
-            'id': 'sg-roads-layer',
-            'type': 'line',
-            'source': 'sg-roads',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
+        const layerConfigs = [
+            {
+                id: 'sg-roads-layer', sourceId: 'sg-roads',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/XenithIG_duct_line.json',
+                type: 'line',
+                paint: { 'line-color': '#FF0000', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-roads',
+                filename: 'xenith_ducts.geojson'
             },
-            'paint': {
-                'line-color': '#ff0000',
-                'line-width': 2
-            }
-        });
-
-        map.on('click', 'sg-roads-layer', function (e) {
-            var feature = e.features[0];
-            var props = feature.properties;
-        
-            new maplibregl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML(`
-                    <div style="font-family: Roboto, sans-serif; font-size: 14px;">
-                        <strong>PCID:</strong> ${props.pcid || 'N/A'}<br>
-                        <strong>Source Type:</strong> ${props.source_feature_type || 'N/A'}<br>
-                        <strong>Status:</strong> ${props.status || 'N/A'}
-                    </div>
-                `)
-                .addTo(map);
-        });
-        
-        map.on('mouseenter', 'sg-roads-layer', () => {
-            map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', 'sg-roads-layer', () => {
-            map.getCanvas().style.cursor = '';
-        });        
-
-        map.addSource('asset-points', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/XenithIG_manholes_point.json'
-        });        
-
-        map.addLayer({
-            'id': 'asset-points-layer',
-            'type': 'circle',
-            'source': 'asset-points',
-            'paint': {
-                'circle-radius': 5,
-                'circle-color': '#FF0000'
+            {
+                id: 'asset-points-layer', sourceId: 'asset-points',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/XenithIG_manholes_point.json',
+                type: 'circle',
+                paint: { 'circle-radius': 5, 'circle-color': '#FF0000' },
+                layout: { visibility: 'visible' },
+                toggleId: 'toggle-asset-points',
+                filename: 'manholes.geojson'
             },
-            'layout': {
-                'visibility': 'visible'
-            }
-        });
-
-        map.addSource('asset-line-network', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Telstra_rdd_fiberroute.json'
-        });        
-
-        map.addLayer({
-            'id': 'asset-line-network-layer',
-            'type': 'line',
-            'source': 'asset-line-network',
-            'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
+            {
+                id: 'asset-line-network-layer', sourceId: 'asset-line-network',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Telstra_rdd_fiberroute.json',
+                type: 'line',
+                paint: { 'line-color': '#CC02F5', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-high-voltage',
+                filename: 'telstra_rdd.geojson'
             },
-            'paint': {
-                'line-color': '#CC02F5',
-                'line-width': 2
+            {
+                id: 'telstra-2a3-layer', sourceId: 'telstra-2a3',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Telstra_2a3_2b2_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#0099FF', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-telstra-2a3',
+                filename: 'telstra_2a3_2b2.geojson'
+            },
+            {
+                id: 'telecom-italia-layer', sourceId: 'telecom-italia',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/TeleconItalia_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#006400', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-telecom-italia',
+                filename: 'telecom_italia.geojson'
+            },
+            {
+                id: 'tata-layer', sourceId: 'tata',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Tata_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#8B0000', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-tata',
+                filename: 'tata.geojson'
+            },
+            {
+                id: 'reach-ntp-layer', sourceId: 'reach-ntp',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Reach_ntp_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#FC7208', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-reach-ntp',
+                filename: 'reach_ntp.geojson'
+            },
+            {
+                id: 'reach-cls-layer', sourceId: 'reach-cls',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Reach_cls_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#800080', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-reach-cls',
+                filename: 'reach_cls.geojson'
+            },
+            {
+                id: 'keppel-pipe-layer', sourceId: 'keppel-pipe',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Keppel_pipeline_line.json',
+                type: 'line',
+                paint: { 'line-color': '#00CED1', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-keppel-pipe',
+                filename: 'keppel_pipe.geojson'
+            },
+            {
+                id: 'keppel-manhole-layer', sourceId: 'keppel-manhole',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Keppel_manholes_point.json',
+                type: 'circle',
+                paint: { 'circle-radius': 4, 'circle-color': '#1E90FF' },
+                layout: {},
+                toggleId: 'toggle-keppel-manhole',
+                filename: 'keppel_manhole.geojson'
+            },
+            {
+                id: 'orange-layer', sourceId: 'orange',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Orange_fiber_route.json',
+                type: 'line',
+                paint: { 'line-color': '#FF7F50', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-orange',
+                filename: 'orange.geojson'
+            },
+            {
+                id: 'flag-layer', sourceId: 'flag',
+                url: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Flag_telecom_duct.json',
+                type: 'line',
+                paint: { 'line-color': '#A0522D', 'line-width': 2 },
+                layout: { 'line-join': 'round', 'line-cap': 'round' },
+                toggleId: 'toggle-flag',
+                filename: 'flag.geojson'
             }
-        });
+        ];
 
-        map.addSource('telstra-2a3', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Telstra_2a3_2b2_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'telstra-2a3-layer',
-            type: 'line',
-            source: 'telstra-2a3',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#0099FF', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-telstra-2a3').addEventListener('change', function(e) {
-            map.setLayoutProperty('telstra-2a3-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
+        layerConfigs.forEach(cfg => {
+            fetch(cfg.url)
+                .then(res => res.json())
+                .then(geojson => {
+                    geojsonCache[cfg.sourceId] = geojson;
 
-        map.addSource('telecom-italia', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/TeleconItalia_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'telecom-italia-layer',
-            type: 'line',
-            source: 'telecom-italia',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#006400', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-telecom-italia').addEventListener('change', function(e) {
-            map.setLayoutProperty('telecom-italia-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('tata', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Tata_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'tata-layer',
-            type: 'line',
-            source: 'tata',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#8B0000', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-tata').addEventListener('change', function(e) {
-            map.setLayoutProperty('tata-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('reach-ntp', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Reach_ntp_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'reach-ntp-layer',
-            type: 'line',
-            source: 'reach-ntp',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#FC7208', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-reach-ntp').addEventListener('change', function(e) {
-            map.setLayoutProperty('reach-ntp-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('reach-cls', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Reach_cls_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'reach-cls-layer',
-            type: 'line',
-            source: 'reach-cls',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#800080', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-reach-cls').addEventListener('change', function(e) {
-            map.setLayoutProperty('reach-cls-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('keppel-pipe', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Keppel_pipeline_line.json'
-        });
-        
-        map.addLayer({
-            id: 'keppel-pipe-layer',
-            type: 'line',
-            source: 'keppel-pipe',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#00CED1', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-keppel-pipe').addEventListener('change', function(e) {
-            map.setLayoutProperty('keppel-pipe-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('keppel-manhole', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Keppel_manholes_point.json'
-        });
-        
-        map.addLayer({
-            id: 'keppel-manhole-layer',
-            type: 'circle',
-            source: 'keppel-manhole',
-            paint: {
-                'circle-radius': 4,
-                'circle-color': '#1E90FF'
-            }
-        });
-        
-        document.getElementById('toggle-keppel-manhole').addEventListener('change', function(e) {
-            map.setLayoutProperty('keppel-manhole-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('orange', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Orange_fiber_route.json'
-        });
-        
-        map.addLayer({
-            id: 'orange-layer',
-            type: 'line',
-            source: 'orange',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#FF7F50', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-orange').addEventListener('change', function(e) {
-            map.setLayoutProperty('orange-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
-        
-        map.addSource('flag', {
-            type: 'geojson',
-            data: 'https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/Flag_telecom_duct.json'
-        });
-        
-        map.addLayer({
-            id: 'flag-layer',
-            type: 'line',
-            source: 'flag',
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
-            paint: { 'line-color': '#A0522D', 'line-width': 2 }
-        });
-        
-        document.getElementById('toggle-flag').addEventListener('change', function(e) {
-            map.setLayoutProperty('flag-layer', 'visibility', e.target.checked ? 'visible' : 'none');
-        });
+                    map.addSource(cfg.sourceId, {
+                        type: 'geojson',
+                        data: geojson
+                    });
 
+                    map.addLayer({
+                        id: cfg.id,
+                        type: cfg.type,
+                        source: cfg.sourceId,
+                        paint: cfg.paint,
+                        layout: cfg.layout || {}
+                    });
 
-        document.getElementById('toggle-roads').addEventListener('change', function(e) {
-            map.setLayoutProperty(
-                'sg-roads-layer',
-                'visibility',
-                e.target.checked ? 'visible' : 'none'
-            );
-        });
-
-        document.getElementById('toggle-asset-points').addEventListener('change', function(e) {
-            map.setLayoutProperty(
-                'asset-points-layer',
-                'visibility',
-                e.target.checked ? 'visible' : 'none'
-            );
-        });
-
-        document.getElementById('toggle-high-voltage').addEventListener('change', function(e) {
-            map.setLayoutProperty(
-                'asset-line-network-layer',
-                'visibility',
-                e.target.checked ? 'visible' : 'none'
-            );
+                    if (cfg.toggleId) {
+                        const checkbox = document.getElementById(cfg.toggleId);
+                        if (checkbox) {
+                            checkbox.addEventListener('change', (e) => {
+                                map.setLayoutProperty(cfg.id, 'visibility', e.target.checked ? 'visible' : 'none');
+                            });
+                        }
+                    }
+                })
+                .catch(err => console.error(`Error loading layer ${cfg.sourceId}:`, err));
         });
 
         // Fetch traffic data from the API
@@ -499,67 +384,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // ✅ When a polygon is drawn, highlight and download selected features
         map.on('draw.create', function(e) {
-            var drawnPolygon = e.features[0];
-        
-            if (!drawnPolygon) {
-                console.error('No polygon drawn');
-                return;
-            }
-        
+            const drawnPolygon = e.features[0];
+            if (!drawnPolygon) return;
+
             document.getElementById('draw-instructions').style.display = 'none';
             map.getCanvas().style.cursor = '';
             showLoading();
-        
-            const layersToCheck = [
-                { id: 'sg-roads-layer', sourceId: 'sg-roads', filename: 'xenith_ducts.geojson' },
-                { id: 'asset-points-layer', sourceId: 'asset-points', filename: 'manholes.geojson' },
-                { id: 'asset-line-network-layer', sourceId: 'asset-line-network', filename: 'telstra_rdd.geojson' },
-                { id: 'telstra-2a3-layer', sourceId: 'telstra-2a3', filename: 'telstra_2a3_2b2.geojson' },
-                { id: 'telecom-italia-layer', sourceId: 'telecom-italia', filename: 'telecom_italia.geojson' },
-                { id: 'tata-layer', sourceId: 'tata', filename: 'tata.geojson' },
-                { id: 'reach-ntp-layer', sourceId: 'reach-ntp', filename: 'reach_ntp.geojson' },
-                { id: 'reach-cls-layer', sourceId: 'reach-cls', filename: 'reach_cls.geojson' },
-                { id: 'keppel-pipe-layer', sourceId: 'keppel-pipe', filename: 'keppel_pipe.geojson' },
-                { id: 'keppel-manhole-layer', sourceId: 'keppel-manhole', filename: 'keppel_manhole.geojson' },
-                { id: 'orange-layer', sourceId: 'orange', filename: 'orange.geojson' },
-                { id: 'flag-layer', sourceId: 'flag', filename: 'flag.geojson' },
-                { id: 'traffic-assets-layer', sourceId: 'traffic-assets', filename: 'traffic_assets.geojson' }
-            ];
-        
+
             const zip = new JSZip();
-        
-            layersToCheck.forEach(({ id, sourceId, filename }) => {
-                const source = map.getSource(sourceId);
-                if (!source) return;
-        
-                const data = source._data || source._options?.data;
+
+            layerConfigs.forEach(cfg => {
+                const data = geojsonCache[cfg.sourceId];
                 if (!data || !data.features) return;
-        
+
                 const intersected = data.features.filter(feature => {
                     try {
                         return turf.booleanIntersects(feature, drawnPolygon);
                     } catch (e) {
-                        console.warn(`Intersection check failed for ${filename}`, e);
+                        console.warn(`Intersection check failed for ${cfg.filename}`, e);
                         return false;
                     }
                 });
-        
+
                 if (intersected.length > 0) {
-                    const fc = {
+                    zip.file(cfg.filename, JSON.stringify({
                         type: 'FeatureCollection',
                         features: intersected
-                    };
-                    zip.file(filename, JSON.stringify(fc, null, 2));
+                    }, null, 2));
                 }
             });
-        
-            zip.generateAsync({ type: "blob" }).then(function(content) {
-                hideLoading();
-                saveAs(content, "selected_features.zip");
-            }).catch(err => {
-                hideLoading();
-                console.error("ZIP generation error", err);
-            });
+
+            zip.generateAsync({ type: 'blob' })
+                .then(content => {
+                    hideLoading();
+                    saveAs(content, 'selected_features.zip');
+                })
+                .catch(err => {
+                    hideLoading();
+                    console.error('ZIP generation error', err);
+                });
         });
         
 
