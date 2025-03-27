@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ]
         });
 
-        map.addControl(draw, 'top-left');
+        //map.addControl(draw, 'top-left');
 
         document.getElementById('draw-polygon').addEventListener('click', function() {
             draw.changeMode('draw_polygon');
