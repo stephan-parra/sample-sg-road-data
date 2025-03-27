@@ -366,3 +366,34 @@ html, body {
   font-size: 13px !important;
   font-weight: 500 !important;
 }
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .reset-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .reset-icon-btn img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .reset-icon-btn:hover {
+    transform: rotate(90deg);
+  }  
