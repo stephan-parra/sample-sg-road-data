@@ -311,4 +311,29 @@ html, body {
   .login-button:hover {
     background-color: #0056b3;
   }
+
+  .icon-credit {
+    position: absolute;
+    bottom: 8px;
+    left: 12px;
+    font-size: 11px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+  }
+  
+  .icon-credit a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .icon-credit a span {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .icon-credit a:hover span {
+    color: #007bff;
+    text-decoration: underline;
+  }  
   
