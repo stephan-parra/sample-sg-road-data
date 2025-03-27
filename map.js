@@ -604,22 +604,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 🆕 Toggle All Layers Button
         const toggleAllBtn = document.getElementById('toggle-all-layers');
+
+        if (toggleAllBtn) {
         let allVisible = true;
 
         toggleAllBtn.addEventListener('click', () => {
             const layerToggles = document.querySelectorAll('.sidebar input[type="checkbox"]');
 
             layerToggles.forEach(checkbox => {
-                checkbox.checked = !allVisible;
-                checkbox.dispatchEvent(new Event('change')); // Triggers each checkbox's 'change' event
+            checkbox.checked = !allVisible;
+            checkbox.dispatchEvent(new Event('change')); // Triggers each checkbox toggle
             });
 
             allVisible = !allVisible;
-
-            // Optional: style toggle indicator
             toggleAllBtn.classList.toggle('toggled');
         });
-
+        } else {
+        console.warn('Toggle all layers button not found in the DOM');
+        }
     }); // 🔹 Make sure this stays at the end of the `map.on('load', function () { ... })` block
-
 });
