@@ -481,76 +481,86 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('draw-instructions').style.display = 'block'; //Map instructions are displayed
         });
 
+        const downloadableLayers = {
+            'sg-roads-layer': 'sg-roads',
+            'asset-points-layer': 'asset-points',
+            'asset-line-network-layer': 'asset-line-network',
+            'telstra-2a3-layer': 'telstra-2a3',
+            'telecom-italia-layer': 'telecom-italia',
+            'tata-layer': 'tata',
+            'reach-ntp-layer': 'reach-ntp',
+            'reach-cls-layer': 'reach-cls',
+            'keppel-pipe-layer': 'keppel-pipe',
+            'keppel-manhole-layer': 'keppel-manhole',
+            'orange-layer': 'orange',
+            'flag-layer': 'flag',
+            'traffic-assets-layer': 'traffic-assets'
+          };          
+
         // ✅ When a polygon is drawn, highlight and download selected features
-        map.on('draw.create', function (e) {
-            const drawnPolygon = e.features[0];
+        map.on('draw.create', function(e) {
+            var drawnPolygon = e.features[0];
+        
             if (!drawnPolygon) {
                 console.error('No polygon drawn');
                 return;
             }
         
-            console.log('Polygon Drawn:', drawnPolygon.geometry);
             document.getElementById('draw-instructions').style.display = 'none';
             map.getCanvas().style.cursor = '';
-        
             showLoading();
         
-            // List of layers and their source IDs
-            const downloadableLayers = {
-                'sg-roads-layer': 'sg-roads',
-                'asset-points-layer': 'asset-points',
-                'asset-line-network-layer': 'asset-line-network',
-                'telstra-2a3-layer': 'telstra-2a3',
-                'telecom-italia-layer': 'telecom-italia',
-                'tata-layer': 'tata',
-                'reach-ntp-layer': 'reach-ntp',
-                'reach-cls-layer': 'reach-cls',
-                'keppel-pipe-layer': 'keppel-pipe',
-                'keppel-manhole-layer': 'keppel-manhole',
-                'orange-layer': 'orange',
-                'flag-layer': 'flag',
-                'traffic-assets-layer': 'traffic-assets'
-            };
+            const layersToCheck = [
+                { id: 'sg-roads-layer', sourceId: 'sg-roads', filename: 'xenith_ducts.geojson' },
+                { id: 'asset-points-layer', sourceId: 'asset-points', filename: 'manholes.geojson' },
+                { id: 'asset-line-network-layer', sourceId: 'asset-line-network', filename: 'telstra_rdd.geojson' },
+                { id: 'telstra-2a3-layer', sourceId: 'telstra-2a3', filename: 'telstra_2a3_2b2.geojson' },
+                { id: 'telecom-italia-layer', sourceId: 'telecom-italia', filename: 'telecom_italia.geojson' },
+                { id: 'tata-layer', sourceId: 'tata', filename: 'tata.geojson' },
+                { id: 'reach-ntp-layer', sourceId: 'reach-ntp', filename: 'reach_ntp.geojson' },
+                { id: 'reach-cls-layer', sourceId: 'reach-cls', filename: 'reach_cls.geojson' },
+                { id: 'keppel-pipe-layer', sourceId: 'keppel-pipe', filename: 'keppel_pipe.geojson' },
+                { id: 'keppel-manhole-layer', sourceId: 'keppel-manhole', filename: 'keppel_manhole.geojson' },
+                { id: 'orange-layer', sourceId: 'orange', filename: 'orange.geojson' },
+                { id: 'flag-layer', sourceId: 'flag', filename: 'flag.geojson' },
+                { id: 'traffic-assets-layer', sourceId: 'traffic-assets', filename: 'traffic_assets.geojson' }
+            ];
         
             const zip = new JSZip();
-            let anyFeaturesFound = false;
         
-            Object.entries(downloadableLayers).forEach(([layerId, sourceId]) => {
+            layersToCheck.forEach(({ id, sourceId, filename }) => {
                 const source = map.getSource(sourceId);
-                if (!source || !source._data || !source._data.features) {
-                    console.warn(`Missing data for source: ${sourceId}`);
-                    return;
-                }
+                if (!source) return;
         
-                const features = source._data.features;
-                const intersecting = features.filter(feature => turf.booleanIntersects(feature, drawnPolygon));
+                const data = source._data || source._options?.data;
+                if (!data || !data.features) return;
         
-                if (intersecting.length > 0) {
-                    const geojson = {
-                        type: "FeatureCollection",
-                        features: intersecting
+                const intersected = data.features.filter(feature => {
+                    try {
+                        return turf.booleanIntersects(feature, drawnPolygon);
+                    } catch (e) {
+                        console.warn(`Intersection check failed for ${filename}`, e);
+                        return false;
+                    }
+                });
+        
+                if (intersected.length > 0) {
+                    const fc = {
+                        type: 'FeatureCollection',
+                        features: intersected
                     };
-        
-                    zip.file(`${layerId}.geojson`, JSON.stringify(geojson, null, 2));
-                    anyFeaturesFound = true;
+                    zip.file(filename, JSON.stringify(fc, null, 2));
                 }
             });
         
-            if (anyFeaturesFound) {
-                zip.generateAsync({ type: "blob" }).then(content => {
-                    const a = document.createElement("a");
-                    a.href = URL.createObjectURL(content);
-                    a.download = "selected_layers.zip";
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    hideLoading();
-                });
-            } else {
+            zip.generateAsync({ type: "blob" }).then(function(content) {
                 hideLoading();
-                alert("No features found in any layer for the selected area.");
-            }
-        });        
+                saveAs(content, "selected_features.zip");
+            }).catch(err => {
+                hideLoading();
+                console.error("ZIP generation error", err);
+            });
+        });
         
 
         // ✅ Reset Map Button Functionality
