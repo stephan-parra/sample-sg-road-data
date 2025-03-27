@@ -14,7 +14,7 @@ html, body {
     width: 100%;
   }
   
-  /* Sidebar Panel */
+  /* Sidebar Styling */
   .sidebar {
     position: absolute;
     top: 50px;
@@ -29,7 +29,6 @@ html, body {
     transition: transform 0.3s ease-in-out;
   }
   
-  /* Sidebar Header */
   .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -43,7 +42,6 @@ html, body {
     color: #333;
   }
   
-  /* Header Icons */
   .sidebar-actions {
     display: flex;
     gap: 8px;
@@ -82,7 +80,6 @@ html, body {
     cursor: pointer;
   }
   
-  /* Sidebar Buttons */
   .sidebar button:not(.icon-btn) {
     width: 100%;
     padding: 12px;
@@ -105,38 +102,35 @@ html, body {
   }
   
   .logout-button {
+    width: 100%;
+    padding: 10px;
     background-color: #dc3545;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
   }
   
   .logout-button:hover {
     background-color: #a71d2a;
   }
   
-  .sidebar button:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-  
-  /* Responsive Sidebar */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 180px;
-      left: 10px;
-      padding: 10px;
-    }
-  
-    .sidebar-title {
-      font-size: 16px;
-    }
-  
-    .sidebar label {
-      font-size: 12px;
-    }
-  
-    .sidebar button {
-      font-size: 12px;
-      padding: 10px;
-    }
+  /* Map Instructions */
+  .map-instructions {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   
   /* Scale Panel */
@@ -170,55 +164,32 @@ html, body {
     cursor: pointer;
   }
   
-  /* Map Instructions */
-  .map-instructions {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
+  /* MapLibre Scale Styling */
+  .maplibregl-ctrl-scale {
     background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 8px 15px;
+    color: #ffffff;
     font-size: 14px;
     font-weight: 500;
+    padding: 6px 12px;
     border-radius: 8px;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
   
-  /* Loading Overlay */
-  #loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: white;
-    font-size: 18px;
-    display: none;
+  .maplibregl-ctrl-bottom-left {
+    bottom: 15px !important;
+    left: 15px !important;
   }
   
-  .loader {
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-top: 5px solid white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+  .maplibregl-ctrl,
+  .maplibregl-ctrl button,
+  .maplibregl-ctrl-group button {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
   }
   
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-  /* Legend Styling */
+  /* Legend */
   .legend {
     position: absolute;
     bottom: 20px;
@@ -263,40 +234,81 @@ html, body {
     border: 1px solid #888;
   }
   
-  /* MapLibre Controls */
-  .maplibregl-ctrl,
-  .maplibregl-ctrl button,
-  .maplibregl-ctrl-group button {
-    font-family: 'Roboto', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
+  /* Misc */
+  .loader {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
   }
   
-  .maplibregl-ctrl-scale {
-    background: rgba(0, 0, 0, 0.7);
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   
-  .maplibregl-ctrl-bottom-left {
-    bottom: 15px !important;
-    left: 15px !important;
+  #loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 18px;
+    display: none;
   }
   
-  .maplibregl-canvas {
-    cursor: grab;
+  /* Sidebar Toggle */
+  #sidebar-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    display: flex;
+    z-index: 1001;
+    transition: transform 0.3s ease-in-out;
   }
   
-  .maplibregl-canvas:active {
-    cursor: grabbing;
+  #toggle-sidebar {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    height: fit-content;
+    align-self: flex-start;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
   }
   
-  .maplibregl-ctrl-group:hover,
-  .maplibregl-popup:hover {
-    cursor: pointer !important;
-  }  
+  #sidebar-container.collapsed {
+    transform: translateX(-290px);
+  }
+  
+  #sidebar-container.collapsed #toggle-sidebar {
+    transform: translateX(290px);
+  }
+  
+  .login-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
