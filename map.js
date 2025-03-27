@@ -484,83 +484,68 @@ document.addEventListener('DOMContentLoaded', function() {
         // ✅ When a polygon is drawn, highlight and download selected features
         map.on('draw.create', function(e) {
             var drawnPolygon = e.features[0];
-
+        
             if (!drawnPolygon) {
                 console.error('No polygon drawn');
                 return;
             }
-
-            console.log('Polygon Drawn:', drawnPolygon.geometry);
-
-            document.getElementById('draw-instructions').style.display = 'none'; // Hide instructions
-            map.getCanvas().style.cursor = ''; // Reset cursor
-
-            showLoading(); // ✅ Show loading spinner while fetching data
-
-            fetch('https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-sg-assets/XenithIG_duct_line.json')
-                .then(response => response.json())
-                .then(roadsData => {
-                    var filteredFeatures = roadsData.features.filter(feature => {
+        
+            document.getElementById('draw-instructions').style.display = 'none';
+            map.getCanvas().style.cursor = '';
+            showLoading();
+        
+            const layersToCheck = [
+                { id: 'sg-roads-layer', sourceId: 'sg-roads', filename: 'xenith_ducts.geojson' },
+                { id: 'asset-points-layer', sourceId: 'asset-points', filename: 'manholes.geojson' },
+                { id: 'asset-line-network-layer', sourceId: 'asset-line-network', filename: 'telstra_rdd.geojson' },
+                { id: 'telstra-2a3-layer', sourceId: 'telstra-2a3', filename: 'telstra_2a3_2b2.geojson' },
+                { id: 'telecom-italia-layer', sourceId: 'telecom-italia', filename: 'telecom_italia.geojson' },
+                { id: 'tata-layer', sourceId: 'tata', filename: 'tata.geojson' },
+                { id: 'reach-ntp-layer', sourceId: 'reach-ntp', filename: 'reach_ntp.geojson' },
+                { id: 'reach-cls-layer', sourceId: 'reach-cls', filename: 'reach_cls.geojson' },
+                { id: 'keppel-pipe-layer', sourceId: 'keppel-pipe', filename: 'keppel_pipe.geojson' },
+                { id: 'keppel-manhole-layer', sourceId: 'keppel-manhole', filename: 'keppel_manhole.geojson' },
+                { id: 'orange-layer', sourceId: 'orange', filename: 'orange.geojson' },
+                { id: 'flag-layer', sourceId: 'flag', filename: 'flag.geojson' },
+                { id: 'traffic-assets-layer', sourceId: 'traffic-assets', filename: 'traffic_assets.geojson' }
+            ];
+        
+            const zip = new JSZip();
+        
+            layersToCheck.forEach(({ id, sourceId, filename }) => {
+                const source = map.getSource(sourceId);
+                if (!source) return;
+        
+                const data = source._data || source._options?.data;
+                if (!data || !data.features) return;
+        
+                const intersected = data.features.filter(feature => {
+                    try {
                         return turf.booleanIntersects(feature, drawnPolygon);
-                    });
-
-                    hideLoading(); // ✅ Hide loading spinner after data is fetched
-
-                    console.log('Filtered Roads:', filteredFeatures.length);
-
-                    if (filteredFeatures.length > 0) {
-                        var filteredGeoJSON = {
-                            type: "FeatureCollection",
-                            features: filteredFeatures
-                        };
-
-                        // ✅ Add filtered roads as a new layer on the map
-                        if (map.getLayer('filtered-features-layer')) {
-                            map.getSource('filtered-features').setData(filteredGeoJSON);
-                        } else {
-                            map.addSource('filtered-features', {
-                                type: "geojson",
-                                data: filteredGeoJSON
-                            });
-
-                            map.addLayer({
-                                id: "filtered-features-layer",
-                                type: "line",
-                                source: "filtered-features",
-                                layout: {
-                                    "line-join": "round",
-                                    "line-cap": "round"
-                                },
-                                paint: {
-                                    "line-color": "#00FF00", // Green highlight for selected features
-                                    "line-width": 3
-                                }
-                            });
-                        }
-
-                        // ✅ Wait 2 seconds before downloading to allow user to see selection
-                        setTimeout(() => {
-                            var blob = new Blob([JSON.stringify(filteredGeoJSON, null, 2)], {
-                                type: "application/json"
-                            });
-                            var url = URL.createObjectURL(blob);
-                            var a = document.createElement("a");
-                            a.href = url;
-                            a.download = "selected_features.geojson";
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        }, 2000);
-                    } else {
-                        console.warn("No features found inside the polygon.");
+                    } catch (e) {
+                        console.warn(`Intersection check failed for ${filename}`, e);
+                        return false;
                     }
-                })
-                .catch(error => {
-                    hideLoading();
-                    console.error('Error fetching sg-roads data:', error);
                 });
+        
+                if (intersected.length > 0) {
+                    const fc = {
+                        type: 'FeatureCollection',
+                        features: intersected
+                    };
+                    zip.file(filename, JSON.stringify(fc, null, 2));
+                }
+            });
+        
+            zip.generateAsync({ type: "blob" }).then(function(content) {
+                hideLoading();
+                saveAs(content, "selected_features.zip");
+            }).catch(err => {
+                hideLoading();
+                console.error("ZIP generation error", err);
+            });
         });
+        
 
         // ✅ Reset Map Button Functionality
         document.getElementById('reset-map').addEventListener('click', function() {
