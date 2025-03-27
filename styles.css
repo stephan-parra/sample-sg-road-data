@@ -381,19 +381,31 @@ html, body {
     color: #333;
   }
   
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
   .reset-icon-btn {
-    background: transparent;
+    background: none;
     border: none;
     padding: 0;
+    margin: 0;
     cursor: pointer;
-    transition: transform 0.2s ease;
   }
   
   .reset-icon-btn img {
     width: 24px;
     height: 24px;
+    display: block;
+    filter: grayscale(100%) brightness(0.4); /* optional for subtle gray tone */
+    transition: transform 0.2s ease, filter 0.2s ease;
   }
   
-  .reset-icon-btn:hover {
+  .reset-icon-btn:hover img {
     transform: rotate(90deg);
-  }  
+    filter: none; /* full color on hover */
+  }
+  
