@@ -357,13 +357,13 @@ html, body {
     background-color: #a71d2a;
   }
   /* Fix for MapLibre control font and layout */
-.maplibregl-ctrl,
-.maplibregl-ctrl button,
-.maplibregl-ctrl-group button {
+  .maplibregl-ctrl,
+  .maplibregl-ctrl button,
+  .maplibregl-ctrl-group button {
     font-family: 'Roboto', sans-serif !important;
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-}
+    font-size: 13px !important;
+    font-weight: 500 !important;
+  }
+  
 
   

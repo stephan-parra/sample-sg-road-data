@@ -44,15 +44,22 @@
             // Clean up ?code=... from URL
             window.history.replaceState({}, document.title, window.location.pathname);
   
-            // Show the app
+            // ✅ Show app after login
             document.getElementById("app").style.display = "block";
   
-            // Resize map if it's already initialized
-            if (window.map && typeof window.map.resize === "function") {
-              setTimeout(() => {
+            // ✅ Force reflow and fix map controls
+            requestAnimationFrame(() => {
+              if (window.map && typeof window.map.resize === "function") {
                 window.map.resize();
-              }, 200);
-            }
+              }
+  
+              const controls = document.querySelectorAll('.maplibregl-ctrl, .maplibregl-ctrl button, .maplibregl-ctrl-group button');
+              controls.forEach(ctrl => {
+                ctrl.style.fontFamily = "'Roboto', sans-serif";
+                ctrl.style.fontSize = "13px";
+                ctrl.style.fontWeight = "500";
+              });
+            });
           } else {
             console.error("❌ Token exchange failed", tokens);
           }
@@ -61,16 +68,22 @@
           console.error("❌ Token exchange error:", error);
         });
     } else if (accessToken) {
-      // ✅ User is already logged in, show app
+      // ✅ Already logged in, show app immediately
       document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("app").style.display = "block";
   
-        // Resize map if it's already initialized
-        if (window.map && typeof window.map.resize === "function") {
-          setTimeout(() => {
+        requestAnimationFrame(() => {
+          if (window.map && typeof window.map.resize === "function") {
             window.map.resize();
-          }, 200);
-        }
+          }
+  
+          const controls = document.querySelectorAll('.maplibregl-ctrl, .maplibregl-ctrl button, .maplibregl-ctrl-group button');
+          controls.forEach(ctrl => {
+            ctrl.style.fontFamily = "'Roboto', sans-serif";
+            ctrl.style.fontSize = "13px";
+            ctrl.style.fontWeight = "500";
+          });
+        });
       });
     }
   
