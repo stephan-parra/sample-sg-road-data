@@ -46,6 +46,13 @@
   
             // Show the app
             document.getElementById("app").style.display = "block";
+  
+            // Resize map if it's already initialized
+            if (window.map && typeof window.map.resize === "function") {
+              setTimeout(() => {
+                window.map.resize();
+              }, 200);
+            }
           } else {
             console.error("❌ Token exchange failed", tokens);
           }
@@ -57,6 +64,13 @@
       // ✅ User is already logged in, show app
       document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("app").style.display = "block";
+  
+        // Resize map if it's already initialized
+        if (window.map && typeof window.map.resize === "function") {
+          setTimeout(() => {
+            window.map.resize();
+          }, 200);
+        }
       });
     }
   
@@ -85,5 +99,4 @@
         });
       }
     });
-  })();
-  
+  })();  

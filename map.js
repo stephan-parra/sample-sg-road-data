@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-    var map = new maplibregl.Map({
+    const map = new maplibregl.Map({
         container: 'map',
         style: {
             "version": 8,
@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
         center: [103.8198, 1.3000],
         zoom: 13
     });
+
+    window.map = map;
 
     // ✅ Add Scale Bar Control
     var scale = new maplibregl.ScaleControl({
