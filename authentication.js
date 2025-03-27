@@ -99,7 +99,7 @@
       }
   
       // Logout button handler
-      const logoutBtn = document.getElementById("logout-btn");
+      const logoutBtn = document.getElementById("logout-ico");
       if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
           // Clear tokens
