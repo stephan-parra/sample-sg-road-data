@@ -12,10 +12,10 @@ html, body {
     top: 0;
     bottom: 0;
     width: 100%;
-  }  
-
-/* Floating Sidebar */
-.sidebar {
+  }
+  
+  /* Sidebar Panel */
+  .sidebar {
     position: absolute;
     top: 50px;
     left: 20px;
@@ -26,9 +26,10 @@ html, body {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1000;
     backdrop-filter: blur(10px);
-}
-
-.sidebar h2 {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar h2 {
     margin: 0;
     font-size: 18px;
     font-weight: 500;
@@ -36,19 +37,17 @@ html, body {
     text-align: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
-}
-
-/* Sidebar Labels */
-.sidebar label {
+  }
+  
+  .sidebar label {
     display: block;
     font-size: 14px;
     color: #333;
     margin: 5px 0;
     cursor: pointer;
-}
-
-/* Sidebar Buttons */
-.sidebar button:not(.reset-icon-btn) {
+  }
+  
+  .sidebar button:not(.reset-icon-btn):not(.icon-btn) {
     width: 100%;
     padding: 12px;
     margin-top: 10px;
@@ -59,290 +58,21 @@ html, body {
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-}
-
-/* Draw Polygon Button */
-#draw-polygon {
-    background-color: #007bff;
-}
-
-#draw-polygon:hover {
-    background-color: #0056b3;
-}
-
-/* Reset Map Button */
-#reset-map {
-    background-color: #dc3545;
-}
-
-#reset-map:hover {
-    background-color: #b52b3a;
-}
-
-/* Map Instructions (Appears at the top center) */
-.map-instructions {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 8px 15px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 8px;
-    display: none; /* Initially hidden */
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Loading Overlay */
-#loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: white;
-    font-size: 18px;
-    display: none;
-}
-
-/* Loading Spinner */
-.loader {
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-top: 5px solid white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-/* Spinner Animation */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 180px;
-        left: 10px;
-        padding: 10px;
-    }
-
-    .sidebar h2 {
-        font-size: 16px;
-    }
-
-    .sidebar label {
-        font-size: 12px;
-    }
-
-    .sidebar button {
-        font-size: 12px;
-        padding: 10px;
-    }
-}
-
-.sidebar button:hover {
+  }
+  
+  .sidebar button:hover {
     transform: scale(1.05);
     opacity: 0.9;
-}
-
-/* Scale Selector Panel */
-.scale-panel {
-    position: absolute;
-    top: 50px;
-    right: 20px;
-    width: 180px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-}
-
-.scale-panel h2 {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    text-align: center;
-    margin-bottom: 8px;
-}
-
-.scale-panel select {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* Modern Scale Bar Styling */
-.maplibregl-ctrl-scale {
-    background: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
-    color: #ffffff; /* White text for better contrast */
-    font-size: 14px; /* Increase text size */
-    font-weight: 500; /* Make text slightly bold */
-    padding: 6px 12px; /* Add padding for better spacing */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Soft shadow effect */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-}
-
-/* Optional: Change Position (Default: bottom-left) */
-.maplibregl-ctrl-bottom-left {
-    bottom: 15px !important; /* Move up slightly */
-    left: 15px !important; /* Adjust left padding */
-}
-
-/* Ensure Cursor Changes on Traffic Camera Points */
-.maplibregl-canvas {
-    cursor: grab; /* Default for panning */
-}
-
-.maplibregl-canvas:active {
-    cursor: grabbing; /* While dragging */
-}
-
-/* Force pointer cursor on interactive features */
-.maplibregl-ctrl-group:hover,
-.maplibregl-popup:hover {
-    cursor: pointer !important;
-}
-
-.legend {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    padding: 12px 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    font-family: 'Roboto', sans-serif;
-    font-size: 13px;
-    z-index: 1000;
-    max-width: 250px;
-}
-
-.legend h3 {
-    margin-top: 0;
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #333;
-}
-
-.legend ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.legend li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-    color: #333;
-}
-
-.legend span {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-right: 8px;
-    border: 1px solid #888;
-}
-
-.switch-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 8px 0;
-    font-size: 14px;
-    color: #333;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 38px;
-    height: 22px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-#sidebar-container {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    display: flex;
-    z-index: 1001;
-    transition: transform 0.3s ease-in-out;
-}
-
-#toggle-sidebar {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-size: 16px;
-    height: fit-content;
-    align-self: flex-start;
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-}
-
-.sidebar {
-    width: 310px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 15px;
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Hide sidebar when collapsed */
-#sidebar-container.collapsed {
-    transform: translateX(-290px);
-}
-
-#sidebar-container.collapsed #toggle-sidebar {
-    transform: translateX(290px);
-}
-
-.login-button {
-    margin-bottom: 10px;
-    padding: 10px;
-    font-weight: bold;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
   }
-  .login-button:hover {
+  
+  #draw-polygon {
+    background-color: #007bff;
+  }
+  
+  #draw-polygon:hover {
     background-color: #0056b3;
   }
-
+  
   .logout-button {
     width: 100%;
     padding: 10px;
@@ -357,17 +87,9 @@ html, body {
   .logout-button:hover {
     background-color: #a71d2a;
   }
-
-  /* Fix MapLibre control font styling */
-.maplibregl-ctrl,
-.maplibregl-ctrl button,
-.maplibregl-ctrl-group button {
-  font-family: 'Roboto', sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-}
-
-.sidebar-header {
+  
+  /* Sidebar Header & Icon Buttons */
+  .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -379,26 +101,26 @@ html, body {
     font-size: 18px;
     font-weight: 500;
     color: #333;
+    flex: 1;
   }
   
-  .sidebar-header {
+  .sidebar-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    gap: 8px;
   }
   
-  .reset-icon-btn {
+  .reset-icon-btn,
+  .icon-btn {
     background: transparent !important;
     border: none;
     box-shadow: none;
     padding: 0;
     margin: 0;
     cursor: pointer;
-  }  
+  }
   
-  .reset-icon-btn img {
-    background-color: transparent !important;
+  .reset-icon-btn img,
+  .icon-btn img {
     width: 20px;
     height: 20px;
     display: block;
@@ -406,51 +128,194 @@ html, body {
     box-shadow: none;
     padding: 0;
     margin: 0;
+    background-color: transparent !important;
     filter: grayscale(100%) brightness(0.4);
     transition: transform 0.2s ease, filter 0.2s ease;
-  }  
-  
-  .reset-icon-btn:hover img {
-    transform: rotate(90deg);
-    filter: none; /* full color on hover */
   }
-
-  .sidebar-header {
-    display: flex;
-    justify-content: space-between;
+  
+  .reset-icon-btn:hover img,
+  .icon-btn:hover img {
+    transform: scale(1.1);
+    filter: none;
+  }
+  
+  .layer-toggle-group {
+    margin-top: 8px;
+  }
+  
+  /* Map Instructions */
+  .map-instructions {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Loading Overlay */
+  #loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    flex-direction: column;
+    color: white;
+    font-size: 18px;
   }
   
-  .sidebar-actions {
-    display: flex;
-    gap: 8px; /* space between icons */
+  .loader {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
   }
-
-  .icon-btn {
-    background: transparent;
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Scale Panel */
+  .scale-panel {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    width: 180px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+  }
+  
+  .scale-panel h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  
+  .scale-panel select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
     border: none;
-    padding: 0;
-    margin: 0;
+    border-radius: 6px;
     cursor: pointer;
   }
   
-  .icon-btn img {
-    width: 20px;
-    height: 20px;
-    display: block;
-    filter: grayscale(100%) brightness(0.4); /* subdued look */
-    transition: transform 0.2s ease, filter 0.2s ease;
+  /* Legend */
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    z-index: 1000;
+    max-width: 250px;
   }
   
-  .icon-btn:hover img {
-    filter: none;              /* full color on hover */
-    transform: scale(1.1);     /* subtle zoom on hover */
+  .legend h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
   }
-
-  .layer-toggle-group {
-    margin-top: 8px; /* Adds spacing below icons */
+  
+  .legend ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
   
+  .legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    color: #333;
+  }
   
+  .legend span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    border: 1px solid #888;
+  }
   
+  /* MapLibre Fixes */
+  .maplibregl-canvas {
+    cursor: grab;
+  }
+  .maplibregl-canvas:active {
+    cursor: grabbing;
+  }
+  
+  .maplibregl-ctrl,
+  .maplibregl-ctrl button,
+  .maplibregl-ctrl-group button {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+  }
+  
+  .maplibregl-ctrl-scale {
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .maplibregl-ctrl-bottom-left {
+    bottom: 15px !important;
+    left: 15px !important;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 180px;
+      left: 10px;
+      padding: 10px;
+    }
+  
+    .sidebar h2 {
+      font-size: 16px;
+    }
+  
+    .sidebar label {
+      font-size: 12px;
+    }
+  
+    .sidebar button {
+      font-size: 12px;
+      padding: 10px;
+    }
+  }  
