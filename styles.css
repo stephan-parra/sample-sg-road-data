@@ -48,7 +48,7 @@ html, body {
 }
 
 /* Sidebar Buttons */
-.sidebar button {
+.sidebar button:not(.reset-icon-btn) {
     width: 100%;
     padding: 12px;
     margin-top: 10px;
