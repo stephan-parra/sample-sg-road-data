@@ -7,14 +7,14 @@
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
   
-    // 👮 Redirect immediately if user is not logged in and no code is present
+    // 🔐 Redirect to Cognito login if not logged in and no auth code is present
     if (!accessToken && !code) {
       const loginUrl = `https://${cognitoDomain}/login?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
       window.location.href = loginUrl;
-      return; // Stop the rest of the script
+      return;
     }
   
-    // 🔁 Handle OAuth2 redirect with code
+    // 🔁 Handle OAuth2 code returned by Cognito after login
     if (code && !accessToken) {
       const data = {
         grant_type: "authorization_code",
@@ -24,7 +24,7 @@
       };
   
       const formBody = Object.entries(data)
-        .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
         .join("&");
   
       fetch(`https://${cognitoDomain}/oauth2/token`, {
@@ -41,10 +41,10 @@
             localStorage.setItem("id_token", tokens.id_token);
             console.log("✅ Login successful");
   
-            // Clean up URL
+            // Clean up ?code=... from URL
             window.history.replaceState({}, document.title, window.location.pathname);
   
-            // Show content
+            // Show the app
             document.getElementById("app").style.display = "block";
           } else {
             console.error("❌ Token exchange failed", tokens);
@@ -54,19 +54,34 @@
           console.error("❌ Token exchange error:", error);
         });
     } else if (accessToken) {
-      // ✅ User is already logged in — show content
+      // ✅ User is already logged in, show app
       document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("app").style.display = "block";
       });
     }
   
-    // 🔐 Login Button Setup (optional if used elsewhere)
+    // 🔘 Button listeners
     document.addEventListener("DOMContentLoaded", () => {
+      // Login button handler
       const loginBtn = document.getElementById("login-btn");
       if (loginBtn) {
         loginBtn.addEventListener("click", () => {
           const loginUrl = `https://${cognitoDomain}/login?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
           window.location.href = loginUrl;
+        });
+      }
+  
+      // Logout button handler
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          // Clear tokens
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("id_token");
+  
+          // Redirect to Cognito logout
+          const logoutUrl = `https://${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(redirectUri)}`;
+          window.location.href = logoutUrl;
         });
       }
     });
