@@ -34,24 +34,32 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>Map Controls</h2>
-                <button id="reset-map" class="reset-icon-btn" title="Reset Map">
-                    <img src="https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-cognito-login/icons8-reset-24.png" alt="Reset" />
+            <div class="sidebar-actions">
+                <button id="toggle-all-btn" class="icon-btn" title="Toggle All Layers">
+                <img src="https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-cognito-login/icons8-view-24.png" alt="Toggle All" />
                 </button>
+                <button id="reset-map" class="icon-btn" title="Reset Map">
+                <img src="https://raw.githubusercontent.com/stephan-parra/sample-sg-road-data/added-cognito-login/icons8-reset-24.png" alt="Reset" />
+                </button>
+            </div>
         </div>
+          
       <!-- Checkboxes -->
-      <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes</label>
-      <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts</label>
-      <label><input type="checkbox" id="toggle-high-voltage" checked> Telstra RDD Fiber Route</label>
-      <label><input type="checkbox" id="toggle-telstra-2a3" checked> Telstra 2a3 2b2 Fiber Route</label>
-      <label><input type="checkbox" id="toggle-telecom-italia" checked> Telecon Italia Fiber Route</label>
-      <label><input type="checkbox" id="toggle-tata" checked> Tata Fiber Route</label>
-      <label><input type="checkbox" id="toggle-reach-ntp" checked> Reach NTP Fiber Route</label>
-      <label><input type="checkbox" id="toggle-reach-cls" checked> Reach CLS Fiber Route</label>
-      <label><input type="checkbox" id="toggle-keppel-pipe" checked> Keppel Pipeline</label>
-      <label><input type="checkbox" id="toggle-keppel-manhole" checked> Keppel Manholes</label>
-      <label><input type="checkbox" id="toggle-orange" checked> Orange Fiber Route</label>
-      <label><input type="checkbox" id="toggle-flag" checked> Flag Telecom Duct</label>
-      <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets</label>
+      <div class="layer-toggle-group">
+        <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes</label>
+        <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts</label>
+        <label><input type="checkbox" id="toggle-high-voltage" checked> Telstra RDD Fiber Route</label>
+        <label><input type="checkbox" id="toggle-telstra-2a3" checked> Telstra 2a3 2b2 Fiber Route</label>
+        <label><input type="checkbox" id="toggle-telecom-italia" checked> Telecon Italia Fiber Route</label>
+        <label><input type="checkbox" id="toggle-tata" checked> Tata Fiber Route</label>
+        <label><input type="checkbox" id="toggle-reach-ntp" checked> Reach NTP Fiber Route</label>
+        <label><input type="checkbox" id="toggle-reach-cls" checked> Reach CLS Fiber Route</label>
+        <label><input type="checkbox" id="toggle-keppel-pipe" checked> Keppel Pipeline</label>
+        <label><input type="checkbox" id="toggle-keppel-manhole" checked> Keppel Manholes</label>
+        <label><input type="checkbox" id="toggle-orange" checked> Orange Fiber Route</label>
+        <label><input type="checkbox" id="toggle-flag" checked> Flag Telecom Duct</label>
+        <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets</label>
+      </div>      
 
       <button id="draw-polygon">Select and Download Xenith IG Ducts Data</button>
       <button id="logout-btn" class="logout-button">🚪 Logout</button>

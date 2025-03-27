@@ -399,8 +399,8 @@ html, body {
   
   .reset-icon-btn img {
     background-color: transparent !important;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     display: block;
     border: none;
     box-shadow: none;
@@ -414,5 +414,43 @@ html, body {
     transform: rotate(90deg);
     filter: none; /* full color on hover */
   }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .sidebar-actions {
+    display: flex;
+    gap: 8px; /* space between icons */
+  }
+
+  .icon-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  
+  .icon-btn img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    filter: grayscale(100%) brightness(0.4); /* subdued look */
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  
+  .icon-btn:hover img {
+    filter: none;              /* full color on hover */
+    transform: scale(1.1);     /* subtle zoom on hover */
+  }
+
+  .layer-toggle-group {
+    margin-top: 8px; /* Adds spacing below icons */
+  }
+  
   
   
