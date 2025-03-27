@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         map.addControl(draw, 'top-left');
 
-        document.getElementById('draw-polygon').addEventListener('click', function() {
+        document.getElementById('download-data').addEventListener('click', function() {
             draw.changeMode('draw_polygon');
             map.getCanvas().style.cursor = 'crosshair'; // Change cursor to target (crosshair)
             document.getElementById('draw-instructions').style.display = 'block'; //Map instructions are displayed
