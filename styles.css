@@ -356,14 +356,12 @@ html, body {
   .logout-button:hover {
     background-color: #a71d2a;
   }
-  /* Fix for MapLibre control font and layout */
-  .maplibregl-ctrl,
-  .maplibregl-ctrl button,
-  .maplibregl-ctrl-group button {
-    font-family: 'Roboto', sans-serif !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-  }
-  
 
-  
+  /* Fix MapLibre control font styling */
+.maplibregl-ctrl,
+.maplibregl-ctrl button,
+.maplibregl-ctrl-group button {
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}

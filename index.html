@@ -1,104 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Digital Map Viewer</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Map Viewer</title>
 
-    <!-- MapLibre & Turf.js -->
-    <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
+  <!-- Fonts first -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- Mapbox Draw for Polygon Selection -->
-    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
+  <!-- MapLibre & Turf.js -->
+  <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Mapbox Draw -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
 
-    <!-- jsPDF & html2canvas for PDF Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-
-    <!-- Custom CSS -->
-    <link href="styles.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="styles.css" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Main content wrapper (hidden by default) -->
-<div id="app" style="display: none;">
-
+  <div id="app" style="display: none;">
     <!-- Map Container -->
     <div id="map"></div>
 
-    <!-- Floating Sidebar -->
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Map Controls</h2>
-        <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes (Source: github)</label>
-        <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts (click for info)</label>
-        <label><input type="checkbox" id="toggle-high-voltage" checked> Telstra RDD Fiber Route</label>
-        <label><input type="checkbox" id="toggle-telstra-2a3" checked> Telstra 2a3 2b2 Fiber Route</label>
-        <label><input type="checkbox" id="toggle-telecom-italia" checked> Telecon Italia Fiber Route</label>
-        <label><input type="checkbox" id="toggle-tata" checked> Tata Fiber Route</label>
-        <label><input type="checkbox" id="toggle-reach-ntp" checked> Reach NTP Fiber Route</label>
-        <label><input type="checkbox" id="toggle-reach-cls" checked> Reach CLS Fiber Route</label>
-        <label><input type="checkbox" id="toggle-keppel-pipe" checked> Keppel Pipeline</label>
-        <label><input type="checkbox" id="toggle-keppel-manhole" checked> Keppel Manholes</label>
-        <label><input type="checkbox" id="toggle-orange" checked> Orange Fiber Route</label>
-        <label><input type="checkbox" id="toggle-flag" checked> Flag Telecom Duct</label>
-        <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets (Source: api.data.gov.sg)</label>
-        
-        <button id="draw-polygon">Select and Download Xenith IG Ducts Data</button>
-        <button id="reset-map">Reset Map</button>
-        <button id="logout-btn" class="logout-button">🚪 Logout</button>
+      <h2>Map Controls</h2>
+      <!-- Checkboxes -->
+      <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes</label>
+      <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts</label>
+      <label><input type="checkbox" id="toggle-high-voltage" checked> Telstra RDD Fiber Route</label>
+      <label><input type="checkbox" id="toggle-telstra-2a3" checked> Telstra 2a3 2b2 Fiber Route</label>
+      <label><input type="checkbox" id="toggle-telecom-italia" checked> Telecon Italia Fiber Route</label>
+      <label><input type="checkbox" id="toggle-tata" checked> Tata Fiber Route</label>
+      <label><input type="checkbox" id="toggle-reach-ntp" checked> Reach NTP Fiber Route</label>
+      <label><input type="checkbox" id="toggle-reach-cls" checked> Reach CLS Fiber Route</label>
+      <label><input type="checkbox" id="toggle-keppel-pipe" checked> Keppel Pipeline</label>
+      <label><input type="checkbox" id="toggle-keppel-manhole" checked> Keppel Manholes</label>
+      <label><input type="checkbox" id="toggle-orange" checked> Orange Fiber Route</label>
+      <label><input type="checkbox" id="toggle-flag" checked> Flag Telecom Duct</label>
+      <label><input type="checkbox" id="toggle-traffic-assets" checked> Traffic Assets</label>
+
+      <button id="draw-polygon">Select and Download Xenith IG Ducts Data</button>
+      <button id="reset-map">Reset Map</button>
+      <button id="logout-btn" class="logout-button">🚪 Logout</button>
     </div>
 
-    <!-- Scale Selector Panel -->
+    <!-- Scale Selector -->
     <div class="scale-panel">
-        <h2>Map Scale</h2>
-        <select id="scale-select">
-            <option value="250">1:250</option>
-            <option value="500">1:500</option>
-            <option value="1250">1:1250</option>
-            <option value="2500">1:2500</option>
-            <option value="5000">1:5000</option>
-        </select>
+      <h2>Map Scale</h2>
+      <select id="scale-select">
+        <option value="250">1:250</option>
+        <option value="500">1:500</option>
+        <option value="1250">1:1250</option>
+        <option value="2500">1:2500</option>
+        <option value="5000">1:5000</option>
+      </select>
     </div>
 
-    <!-- Instructions for Drawing -->
+    <!-- Instructions -->
     <div id="draw-instructions" class="map-instructions">Click to draw a polygon, double-click to finish</div>
 
     <!-- Loading Overlay -->
     <div id="loading-overlay">
-        <div class="loader"></div>
-        <p>Preparing to download data...</p>
+      <div class="loader"></div>
+      <p>Preparing to download data...</p>
     </div>
 
-    <!-- Legend Panel -->
+    <!-- Legend -->
     <div class="legend">
-        <h3>Legend</h3>
-        <ul>
-            <li><span style="background-color:#FF7F50;"></span> Orange Fiber Route</li>
-            <li><span style="background-color:#00CED1;"></span> Keppel Pipeline</li>
-            <li><span style="background-color:#1E90FF; border-radius:50%; width:10px; height:10px;"></span> Keppel Manholes</li>
-            <li><span style="background-color:#A0522D;"></span> Flag Telecom Duct</li>
-            <li><span style="background-color:#FFA500;"></span> Reach NTP Fiber Route</li>
-            <li><span style="background-color:#800080;"></span> Reach CLS Fiber Route</li>
-            <li><span style="background-color:#8B0000;"></span> Tata Fiber Route</li>
-            <li><span style="background-color:#006400;"></span> Telecon Italia Fiber Route</li>
-            <li><span style="background-color:#0099FF;"></span> Telstra 2a3 2b2 Fiber Route</li>
-            <li><span style="background-color:#CC02F5;"></span> Telstra RDD Fiber Route</li>
-            <li><span style="background-color:#FF5733; border-radius:50%; width:10px; height:10px;"></span> Traffic Cameras</li>
-            <li><span style="background-color:#FF0000; border-radius:50%; width:10px; height:10px;"></span> Xenith IG Manholes</li>
-            <li><span style="background-color:#FF0000;"></span> Xenith IG Ducts</li>
-            <li><span style="background-color:#00FF00;"></span> Selected Features</li>
-        </ul>
+      <h3>Legend</h3>
+      <ul>
+        <li><span style="background-color:#FF7F50;"></span> Orange Fiber Route</li>
+        <li><span style="background-color:#00CED1;"></span> Keppel Pipeline</li>
+        <li><span style="background-color:#1E90FF; border-radius:50%; width:10px; height:10px;"></span> Keppel Manholes</li>
+        <li><span style="background-color:#A0522D;"></span> Flag Telecom Duct</li>
+        <li><span style="background-color:#FFA500;"></span> Reach NTP Fiber Route</li>
+        <li><span style="background-color:#800080;"></span> Reach CLS Fiber Route</li>
+        <li><span style="background-color:#8B0000;"></span> Tata Fiber Route</li>
+        <li><span style="background-color:#006400;"></span> Telecon Italia Fiber Route</li>
+        <li><span style="background-color:#0099FF;"></span> Telstra 2a3 2b2 Fiber Route</li>
+        <li><span style="background-color:#CC02F5;"></span> Telstra RDD Fiber Route</li>
+        <li><span style="background-color:#FF5733; border-radius:50%; width:10px; height:10px;"></span> Traffic Cameras</li>
+        <li><span style="background-color:#FF0000; border-radius:50%; width:10px; height:10px;"></span> Xenith IG Manholes</li>
+        <li><span style="background-color:#FF0000;"></span> Xenith IG Ducts</li>
+        <li><span style="background-color:#00FF00;"></span> Selected Features</li>
+      </ul>
     </div>
-</div>
-    <!-- Custom JavaScript -->
-    <script src="map.js"></script>
-    <script src="authentication.js"></script>
+  </div>
+
+  <!-- JS Files -->
+  <script src="map.js"></script>
+  <script src="authentication.js"></script>
 </body>
 </html>
