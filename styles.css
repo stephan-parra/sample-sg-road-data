@@ -408,8 +408,7 @@ html, body {
     margin: 0;
     filter: grayscale(100%) brightness(0.4);
     transition: transform 0.2s ease, filter 0.2s ease;
-  }
-  
+  }  
   
   .reset-icon-btn:hover img {
     transform: rotate(90deg);
