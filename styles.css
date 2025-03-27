@@ -327,4 +327,17 @@ body {
     transform: translateX(290px);
 }
 
-
+.login-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  

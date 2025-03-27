@@ -27,12 +27,15 @@
 </head>
 
 <body>
+    <!-- Main content wrapper (hidden by default) -->
+<div id="app" style="display: none;">
 
     <!-- Map Container -->
     <div id="map"></div>
 
     <!-- Floating Sidebar -->
     <div class="sidebar">
+        <button id="login-btn" class="login-button">🔐 Login</button>
         <h2>Map Controls</h2>
         <label><input type="checkbox" id="toggle-asset-points" checked> Xenith IG Manholes (Source: github)</label>
         <label><input type="checkbox" id="toggle-roads" checked> Xenith IG Ducts (click for info)</label>
@@ -93,10 +96,9 @@
             <li><span style="background-color:#00FF00;"></span> Selected Features</li>
         </ul>
     </div>
-
-
+</div>
     <!-- Custom JavaScript -->
     <script src="map.js"></script>
-
+    <script src="authentication.js"></script>
 </body>
 </html>
